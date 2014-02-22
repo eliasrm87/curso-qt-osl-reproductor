@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(wgtMain_);
 
     //Initialize widgets
-    mediaPlayer_  = new QMediaPlayer(this);
-    playerSlider_ = new QSlider(Qt::Horizontal, this);
-    videoWidget_  = new QVideoWidget(this);
-    volumeSlider_ = new QSlider(Qt::Horizontal, this);
+    mediaPlayer_  = new QMediaPlayer(this); // Objeto que se encarga del video
+    playerSlider_ = new QSlider(Qt::Horizontal, this); // Barra de tiempo de reproducción
+    videoWidget_  = new QVideoWidget(this); // Recuadro negro de vídeo
+    volumeSlider_ = new QSlider(Qt::Horizontal, this); // Barra de volumen
     btnOpen_      = new QToolButton(this);
     btnPlay_      = new QToolButton(this);
     btnPause_     = new QToolButton(this);
@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Setup widwgets
     videoWidget_->setMinimumSize(400, 400);
-    mediaPlayer_->setVideoOutput(videoWidget_);
+    mediaPlayer_->setVideoOutput(videoWidget_); // Añadir el recuadro al reproductor
     mediaPlayer_->setVolume(100);
     videoWidget_->setAspectRatioMode(Qt::KeepAspectRatio);
     volumeSlider_->setRange(0, 100);
@@ -51,6 +51,41 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
+
+    // Inicializamos los elementos del menú
+    mainMenu_ = new QMenuBar(this);
+    mnuArchivo_ = new QMenu(tr("&Archivo"), this);
+    mnuVer_ = new QMenu(tr("&Ver"), this);
+    mnuAyuda_ = new QMenu(tr("&Ayuda"), this);
+
+    // Añadimos los elementos al menú
+    mainMenu_->addMenu(mnuArchivo_);
+    mainMenu_->addMenu(mnuVer_);
+    mainMenu_->addMenu(mnuAyuda_);
+
+    // Inicializamos acciones de los elementos del menú
+    // Añadimos las acciones a los elementos
+    // Añadimos los shortcuts correspondientes
+    actArchivoAbrir_ = new QAction(tr("Abrir..."), this);
+    actArchivoAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    mnuArchivo_->addAction(actArchivoAbrir_);
+
+    actArchivoRecientes_ = new QAction(tr("Recientes"), this);
+    mnuArchivo_->addAction(actArchivoRecientes_);
+
+    actVerPantallaCompleta_ = new QAction(tr("Pantalla completa"), this);
+    actVerPantallaCompleta_->setShortcut(QKeySequence(Qt::Key_F11));
+    mnuVer_->addAction(actVerPantallaCompleta_);
+
+    actVerMetadatos_ = new QAction(tr("Metadatos"), this);
+    mnuVer_->addAction(actVerMetadatos_);
+
+    actAyudaAcercaDe_ = new QAction(tr("Acerca de"), this);
+    mnuAyuda_->addAction(actAyudaAcercaDe_);
+
+    // Añadir barra de menús a la ventana
+    setMenuBar(mainMenu_);
+
 }
 
 MainWindow::~MainWindow()
