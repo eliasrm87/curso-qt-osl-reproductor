@@ -102,6 +102,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::onOpen()
 {
+    //mediaPlayer_->setMedia(QUrl());
+
     //Show file open dialog
     QString fileName = QFileDialog::getOpenFileName(this,
                                             tr("Abrir archivo"));

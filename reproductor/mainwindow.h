@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QMediaMetaData>
 #include <metadatadialog.h>
+#include <QUrl>
 
 class MainWindow : public QMainWindow
 {
