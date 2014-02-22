@@ -12,11 +12,21 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    qdialogmensaje.cpp \
+    metadadialog.cpp \
+    openstreamingdialog.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    qdialogmensaje.h \
+    metadadialog.h \
+    openstreamingdialog.h
 
 RESOURCES += \
     resources.qrc
+
+FORMS += \
+    metadadialog.ui \
+    openstreamingdialog.ui
 
 
