@@ -14,6 +14,7 @@ class URLDialog : public QDialog
 public:
     explicit URLDialog(QWidget *parent = 0);
     ~URLDialog();
+    QString getUrl();
 
 private:
     Ui::URLDialog *ui;

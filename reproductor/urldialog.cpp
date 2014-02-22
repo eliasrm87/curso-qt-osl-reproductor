@@ -12,3 +12,8 @@ URLDialog::~URLDialog()
 {
     delete ui;
 }
+
+QString URLDialog::getUrl()
+{
+    return ui->lineEdit->text();
+}
