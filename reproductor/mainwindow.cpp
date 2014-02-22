@@ -51,6 +51,48 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
+
+    //Parte de clase
+    //Menú archivo -> abrir
+    barMenu_ = new QMenuBar(this);
+    setMenuBar(barMenu_);
+
+    mnuArchivo_ = new QMenu(tr("&Archivo"), this);
+    barMenu_->addMenu(mnuArchivo_);
+
+    actArchivoAbrir_ = new QAction(tr("&Abrir"), this);
+    mnuArchivo_->addAction(actArchivoAbrir_);
+    connect(actArchivoAbrir_, SIGNAL(triggered()), this, SLOT(onOpen()));
+
+    //Pantalla completa
+    mnuVer_ = new QMenu(tr("&Ver"), this);
+    barMenu_->addMenu(mnuVer_);
+
+    actFullScreen_ = new QAction(tr("&Pantalla completa"), this);
+    mnuVer_->addAction(actFullScreen_);
+    connect(actFullScreen_, SIGNAL(triggered()), this, SLOT(escuchaActFS()));
+    connect(this, SIGNAL(fullScreen(bool)), videoWidget_, SLOT(setFullScreen(bool)));
+    actFullScreen_->setShortcut(QKeySequence(Qt::Key_F11));
+    estadoFS_ = false;
+
+    //Menú ayuda -> acerca de
+    mnuAyuda_ = new QMenu(tr("&Ayuda"), this);
+    barMenu_->addMenu(mnuAyuda_);
+
+    actAyudaAcerca_ = new QAction(tr("&Acerca De"), this);
+    mnuAyuda_->addAction(actAyudaAcerca_);
+    connect(actAyudaAcerca_, SIGNAL(triggered()), this, SLOT(onAcercaDe()));
+
+    //Recientes
+    mnuRecientes_ = new QMenu(tr("&Recientes"), this);
+    mnuArchivo_->addMenu(mnuRecientes_);
+
+    //Ver metadatos
+    actVerMetadatos_ = new QAction(tr("&Metadatos"), this);
+    mnuVer_->addAction(actVerMetadatos_);
+    connect(actVerMetadatos_, SIGNAL(triggered()), this, SLOT(verMetadatos()));
+
+    //QTcpSocket
 }
 
 MainWindow::~MainWindow()
@@ -65,8 +107,16 @@ void MainWindow::onOpen()
                                             tr("Abrir archivo"));
     if (fileName != "") {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+
+        //Recientes
+        JReciente* reciente = new JReciente(this);
+        reciente->setURL(fileName);
+        mnuRecientes_->addAction(reciente);
+        connect(reciente, SIGNAL(pulsado(QString)), this, SLOT(abrirReciente(QString)));
     }
 }
+
+
 
 void MainWindow::onSeek()
 {
@@ -87,3 +137,41 @@ void MainWindow::onVolumeChanged(int volume)
 {
     mediaPlayer_->setVolume(volume);
 }
+
+void MainWindow::onAcercaDe()
+{
+  JDialog* asd = new JDialog();
+  asd->exec();
+}
+
+void MainWindow::abrirReciente(QString url)
+{
+    mediaPlayer_->setMedia(QUrl::fromLocalFile(url));
+}
+
+void MainWindow::verMetadatos()
+{
+    /* QVariant titulo = mediaPlayer_->metaData(QMediaMetaData::Duration);
+
+    QMessageBox dialogo;
+    QString texto = titulo.toString();
+    dialogo.setText(texto);
+    dialogo.exec(); */
+    MetadataDialog md (mediaPlayer_);
+    md.exec();
+}
+
+void MainWindow::escuchaActFS()
+{
+    if (! estadoFS_) {
+        estadoFS_ = true;
+        emit fullScreen(true);
+    }
+    else {
+        estadoFS_ = false;
+        emit fullScreen(false);
+    }
+
+}
+
+
