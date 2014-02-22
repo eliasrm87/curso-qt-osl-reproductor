@@ -10,6 +10,9 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +33,25 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+
+    // Barra de menú
+    QMenuBar *mainMenu_;
+
+    // Elementos del menú
+    QMenu *mnuArchivo_;
+    QMenu *mnuVer_;
+    QMenu *mnuAyuda_;
+
+    // Acciones de Archivo
+    QAction *actArchivoAbrir_;
+    QAction *actArchivoRecientes_;
+
+    // Acciones de Ver
+    QAction *actVerPantallaCompleta_;
+    QAction *actVerMetadatos_;
+
+    // Acciones de Ayuda
+    QAction *actAyudaAcercaDe_;
 
 private slots:
     void onOpen();
