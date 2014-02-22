@@ -10,6 +10,15 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QSettings>
+#include <QStringList>
+#include <QDebug>
+#include <QSignalMapper>
 
 class MainWindow : public QMainWindow
 {
@@ -31,6 +40,20 @@ private:
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
 
+    QMenuBar*           mbarMenu_;
+    QMenu*              mnuFile_;
+    QMenu*              mnuView_;
+    QMenu*              mnuRecents_;
+    QAction*            actOpen_;
+    QAction*            actFullScreen_;
+
+    QSettings*          setConfig_;
+    QStringList         lstRecents_;
+    QSignalMapper*      mapperRecents_;
+
+    bool eventFilter(QObject *obj, QEvent *event);
+    void createRecentFiles();
+
 private slots:
     void onOpen();
     void onSeek();
@@ -38,6 +61,8 @@ private slots:
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
 
+    void onFullScreen();
+    void onRecent(QAction *act);
 };
 
 #endif // MAINWINDOW_H
