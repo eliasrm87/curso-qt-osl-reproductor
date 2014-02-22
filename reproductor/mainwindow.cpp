@@ -25,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     mnuRecientes_ = new QMenu(tr("&Recientes"), this);
     mnuArchivo_->addMenu(mnuRecientes_);
 
+    // Archivo > Streaming Radio
+    mnuStreamingRadio_ = new QMenu(tr("&Radio online"), this);
+    mnuArchivo_->addMenu(mnuStreamingRadio_);
+
     // Ver
     mnuVer_ = new QMenu(tr("&Ver"), this);
     mainMenu_->addMenu(mnuVer_);
@@ -107,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
 
     CargarRecientes();
+    StreamingRadio();
     mediaPlayer_->availableMetaData();
     this->setMenuBar(mainMenu_);
 
@@ -210,4 +215,17 @@ void MainWindow::MetaDatos(){
     md_ = new MetadataDialog(mediaPlayer_, this);
     md_->exec();
 
+}
+
+void MainWindow::StreamingRadio(){
+
+    // MAXIMA FM
+    actRadioMaximaFM_ = new QAction(tr("&Maxima FM"), this);
+    mnuStreamingRadio_->addAction(actRadioMaximaFM_);
+    connect(actRadioMaximaFM_,  SIGNAL(triggered()), this, SLOT(MaximaFM()));
+
+}
+
+void MainWindow::MaximaFM(){
+    mediaPlayer_->setMedia(QUrl("http://288.92.53.87:80/MAXIMAFM"));
 }

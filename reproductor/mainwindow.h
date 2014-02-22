@@ -25,6 +25,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void GuardarDireccionArchivo(QString line);
     void CargarRecientes();
+    void StreamingRadio();
     ~MainWindow();
     
 private:
@@ -52,6 +53,8 @@ private:
     QAction    *actAbrir_;
     QMenu      *mnuRecientes_;
     QAction    *actReciente_;
+    QMenu      *mnuStreamingRadio_;
+    QAction    *actRadioMaximaFM_;
 
     // Menu -> Ver
     QMenu      *mnuVer_;
@@ -74,7 +77,7 @@ private slots:
     void SalirPantallaCompleta();
     void PulsarReciente();
     void MetaDatos();
-
+    void MaximaFM();
 };
 
 #endif // MAINWINDOW_H
