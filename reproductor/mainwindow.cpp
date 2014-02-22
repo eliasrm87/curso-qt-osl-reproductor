@@ -3,6 +3,55 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+
+    // Centrar ventana en pantalla
+    QRect qr = this->frameGeometry();
+    qr.moveCenter(QDesktopWidget().availableGeometry().center());
+    this->move(qr.topLeft());
+
+    //Inicializamos los menús
+    mainMenu_ = new QMenuBar(this);
+
+    // Archivo
+    mnuArchivo_ = new QMenu(tr("&Archivo"), this);
+    mainMenu_->addMenu(mnuArchivo_);
+
+    // Archivo > Abrir
+    actAbrir_ = new QAction(tr("&Abrir"), this);
+    actAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    mnuArchivo_->addAction(actAbrir_);
+
+    // Archivo > Recientes
+    mnuRecientes_ = new QMenu(tr("&Recientes"), this);
+    mnuArchivo_->addMenu(mnuRecientes_);
+
+    // Ver
+    mnuVer_ = new QMenu(tr("&Ver"), this);
+    mainMenu_->addMenu(mnuVer_);
+
+    // Ver > Pantalla completa
+    actPantallaCompleta_ = new QAction(tr("&Pantalla completa"), this);
+    actPantallaCompleta_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    mnuVer_->addAction(actPantallaCompleta_);
+
+    // Ver > Salir pantalla completa
+    actSalirPantallaCompleta_ = new QAction(tr("&Salir pantalla completa"), this);
+    actSalirPantallaCompleta_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_G));
+
+    // Ver > Metadatos
+    actMetadatos_ = new QAction(tr("&Metadatos"), this);
+    actMetadatos_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+    mnuVer_->addAction(actMetadatos_);
+
+    // Ayuda
+    mnuAyuda_ = new QMenu(tr("&Ayuda"), this);
+    mainMenu_->addMenu(mnuAyuda_);
+
+    // Ayuda > Acerca de..
+    actAcercaDe_ = new QAction(tr("&Acerca de ..."), this);
+    actAcercaDe_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
+    mnuAyuda_->addAction(actAcercaDe_);
+
     //Create central widget and set main layout
     wgtMain_ = new QWidget(this);
     lytMain_ = new QGridLayout(wgtMain_);
@@ -44,6 +93,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Connections
     connect(btnOpen_,      SIGNAL(pressed()),               this,         SLOT(onOpen()));
+    connect(actAbrir_,     SIGNAL(triggered()),             this,         SLOT(onOpen()));
+    connect(actAcercaDe_,  SIGNAL(triggered()),             this,         SLOT(alAcercaDe()));
+    connect(actPantallaCompleta_,  SIGNAL(triggered()),     this,         SLOT(PantallaCompleta()));
+    connect(actSalirPantallaCompleta_,  SIGNAL(triggered()),this,         SLOT(SalirPantallaCompleta()));
+    connect(actMetadatos_, SIGNAL(triggered()),             this,         SLOT(MetaDatos()));
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
     connect(btnPause_,     SIGNAL(pressed()),               mediaPlayer_, SLOT(pause()));
     connect(btnStop_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(stop()));
@@ -51,6 +105,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
+
+    CargarRecientes();
+    mediaPlayer_->availableMetaData();
+    this->setMenuBar(mainMenu_);
+
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +124,8 @@ void MainWindow::onOpen()
                                             tr("Abrir archivo"));
     if (fileName != "") {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+        fileOpen_ = QUrl::fromLocalFile(fileName).toString();
+        GuardarDireccionArchivo(fileOpen_);
     }
 }
 
@@ -86,4 +147,67 @@ void MainWindow::onPositionChanged(qint64 position)
 void MainWindow::onVolumeChanged(int volume)
 {
     mediaPlayer_->setVolume(volume);
+}
+
+void MainWindow::alAcercaDe(){
+
+     QMessageBox::about(this, "Acerca de ...", "Versión 0.1 Alpha\nCopyright 2014");
+
+}
+
+void MainWindow::PantallaCompleta(){
+
+    videoWidget_->setFullScreen(true);
+
+}
+
+void MainWindow::SalirPantallaCompleta(){
+    videoWidget_->setFocus();
+    videoWidget_->fullScreenChanged(false);
+    videoWidget_->setFullScreen(false);
+}
+
+void MainWindow::GuardarDireccionArchivo(QString line){
+
+    QFile file("recientes.txt");
+    file.open(QIODevice::Append);
+
+    QTextStream out(&file);
+
+    out << line << endl;
+    actReciente_ = new QAction(line, this);
+    mnuRecientes_->addAction(actReciente_);
+    connect(actReciente_,  SIGNAL(triggered()), this, SLOT(PulsarReciente()));
+
+    /* Close the file */
+    file.close();
+
+}
+
+void MainWindow::PulsarReciente(){
+    QAction* act = (QAction*) QObject::sender();
+    mediaPlayer_->setMedia(QUrl(act->text()));
+}
+
+void MainWindow::CargarRecientes(){
+
+    QFile file("recientes.txt");
+    file.open(QIODevice::ReadOnly);
+    QTextStream in(&file);
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        actReciente_ = new QAction(line, this);
+        mnuRecientes_->addAction(actReciente_);
+        connect(actReciente_,  SIGNAL(triggered()), this, SLOT(PulsarReciente()));
+    }
+
+    file.close();
+}
+
+void MainWindow::MetaDatos(){
+
+    md_ = new MetadataDialog(mediaPlayer_, this);
+    md_->exec();
+
 }
