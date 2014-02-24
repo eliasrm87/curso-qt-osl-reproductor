@@ -70,21 +70,29 @@ MainWindow::MainWindow(QWidget *parent) :
     actArchivoAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     mnuArchivo_->addAction(actArchivoAbrir_);
 
-    actArchivoRecientes_ = new QAction(tr("Recientes"), this);
-    mnuArchivo_->addAction(actArchivoRecientes_);
-
-    actVerPantallaCompleta_ = new QAction(tr("Pantalla completa"), this);
-    actVerPantallaCompleta_->setShortcut(QKeySequence(Qt::Key_F11));
-    mnuVer_->addAction(actVerPantallaCompleta_);
+    actArchivoRecientes_ = new QMenu(tr("Recientes"), this);
+    mnuArchivo_->addMenu(actArchivoRecientes_);
 
     actVerMetadatos_ = new QAction(tr("Metadatos"), this);
     mnuVer_->addAction(actVerMetadatos_);
+
+    actVerPantallaCompleta_ = new QAction(tr("Pantalla completa"), this);
+    actVerPantallaCompleta_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F11));
+    mnuVer_->addAction(actVerPantallaCompleta_);
 
     actAyudaAcercaDe_ = new QAction(tr("Acerca de"), this);
     mnuAyuda_->addAction(actAyudaAcercaDe_);
 
     // Añadir barra de menús a la ventana
     setMenuBar(mainMenu_);
+
+    // Conexiones del menú
+    connect(actArchivoAbrir_, SIGNAL(triggered()), this, SLOT(onOpen()));
+    connect(actVerPantallaCompleta_, SIGNAL(triggered()), this, SLOT(pantallaCompleta()));
+    connect(actVerMetadatos_, SIGNAL(triggered()), this, SLOT(showMetadata()));
+
+    // Hace que funcione el eventfilter
+    videoWidget_->installEventFilter(this);
 
 }
 
@@ -97,10 +105,19 @@ void MainWindow::onOpen()
 {
     //Show file open dialog
     QString fileName = QFileDialog::getOpenFileName(this,
-                                            tr("Abrir archivo"));
+                                                    tr("Abrir archivo"));
+
+    // Para abrir streaming setMedia(QUrl("http://208.92.53.87:80/MAXIMAFM"))
+
     if (fileName != "") {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
     }
+
+    // Reproducelo automáticamente
+    mediaPlayer_->play();
+
+    // Agregar a recientes
+    this->setRecientes(fileName);
 }
 
 void MainWindow::onSeek()
@@ -121,4 +138,50 @@ void MainWindow::onPositionChanged(qint64 position)
 void MainWindow::onVolumeChanged(int volume)
 {
     mediaPlayer_->setVolume(volume);
+}
+
+void MainWindow::pantallaCompleta()
+{
+    if(!videoWidget_->isFullScreen()){
+        videoWidget_->setFullScreen(true);
+    }
+    else{
+        videoWidget_->setFullScreen(false);
+    }
+}
+
+void MainWindow::setRecientes(QString path)
+{
+    actArchivoRecientes_->addAction(new QAction(path, this));
+}
+
+void MainWindow::showMetadata()
+{
+    MetadataDialog videoData(mediaPlayer_);
+    videoData.exec();
+}
+
+// Para poder pillar bien lo de pantalla completa hay que pasar esta
+// funcion de event filter, y habilita fullscreen
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    QMouseEvent *mouse = static_cast<QMouseEvent *>(event);
+
+    if (obj == videoWidget_) {
+        if (event->type() == QEvent::MouseButtonDblClick) {
+            if(mouse->button() == Qt::LeftButton){
+                if(!videoWidget_->isFullScreen()){
+                    videoWidget_->setFullScreen(true);
+                }
+                else{
+                    videoWidget_->setFullScreen(false);
+                }
+                return true;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+    return false;
 }
