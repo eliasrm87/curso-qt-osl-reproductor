@@ -13,6 +13,9 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
+#include <QMouseEvent>
+#include <QEvent>
+#include <metadatadialog.h>
 
 class MainWindow : public QMainWindow
 {
@@ -44,7 +47,7 @@ private:
 
     // Acciones de Archivo
     QAction *actArchivoAbrir_;
-    QAction *actArchivoRecientes_;
+    QMenu *actArchivoRecientes_;
 
     // Acciones de Ver
     QAction *actVerPantallaCompleta_;
@@ -59,6 +62,10 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
+    bool eventFilter(QObject *obj, QEvent *event);
+    void pantallaCompleta();
+    void setRecientes(QString path);
+    void showMetadata();
 
 };
 
