@@ -46,6 +46,8 @@ private:
     QAction*            actMetadatos_;
     QAction*            actAcercaDe_;
     QStringList         recentsList;                // lista de recientes
+    QMenu*              actStreaming_;
+    QAction*            actRtve_;
 
 
 
@@ -62,6 +64,7 @@ private slots:
     void readRecentsVideos();
     void PulsarReciente();
     void alMetadato();
+    void alRtve();
 
 };
 

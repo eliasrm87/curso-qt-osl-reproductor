@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     mnuArchivo_->addAction(actAbrir_);
     actRecientes_ = new QMenu(tr("&Recientes"), this);
     mnuArchivo_->addMenu(actRecientes_);
+    actStreaming_ = new QMenu(tr("&Streaming"), this);
+    mnuArchivo_->addMenu(actStreaming_);
+    actRtve_ = new QAction(tr("&RTVE"), this);
+    actStreaming_->addAction(actRtve_);
 
     actFullScreen_ = new QAction(tr("&Pantalla Completa"), this);
     mnuVer_->addAction(actFullScreen_);
@@ -32,8 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     actAcercaDe_ = new QAction(tr("&Acerca de"), this);
     mnuAyuda_->addAction(actAcercaDe_);
-
-
 
     //Initialize widgets
     mediaPlayer_  = new QMediaPlayer(this);
@@ -92,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actAcercaDe_, SIGNAL(triggered()), this, SLOT(alAcercade()));
     connect(actFullScreen_, SIGNAL(triggered()), this, SLOT(alFullScreen()));
     connect(actMetadatos_, SIGNAL(triggered()), this, SLOT(alMetadato()));
+    connect(actRtve_, SIGNAL(triggered()), this, SLOT(alRtve()));
 }
 
 MainWindow::~MainWindow()
@@ -184,4 +187,8 @@ void MainWindow::alMetadato()
 void MainWindow::alFullScreen()
 {
     videoWidget_->setFullScreen(true);
+}
+
+void MainWindow::alRtve() {
+    mediaPlayer_->setMedia(QUrl("http://mvod.lvlt.rtve.es/resources/TE_STABLE/mp3/6/1/1393195625816.mp3"));
 }
