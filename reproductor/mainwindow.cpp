@@ -63,6 +63,13 @@ MainWindow::MainWindow(QWidget *parent) :
     actArchivoAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
     //Se añade la acción Abrir al menú Archivo.
     mnuArchivo_->addAction(actArchivoAbrir_);
+
+    //Se inicializa la acción Abrir Streaming (URL).
+    actArchivoAbrirStreaming_ = new QAction(tr("Abrir &Streaming (URL)"), this);
+    actArchivoAbrirStreaming_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    //Se añade la acción Abrir Streaming (URL) al menú Archivo.
+    mnuArchivo_->addAction(actArchivoAbrirStreaming_);
+
     //--------------------
 
     //----AYUDA----------
@@ -80,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainMenu_->addMenu(mnuVer_);
 
     actVerMetadatos_ = new QAction(tr("&Metadatos"), this);
-    actVerMetadatos_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    actVerMetadatos_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
     mnuVer_->addAction(actVerMetadatos_);
     //--------------------
 
@@ -97,8 +104,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
 
     //Menú Archivo
-    //Al pinchar sobre Abrir se invocará el slot (método) alAbrir().
+    //Al pinchar sobre Abrir se invocará el slot (método) onOpen().
     connect(actArchivoAbrir_, SIGNAL(triggered()), this, SLOT(onOpen()));
+    //Al pinchar sobre Abrir Streaming (URL) se invocará el slot (método) onOpenStreaming().
+    connect(actArchivoAbrirStreaming_, SIGNAL(triggered()), this, SLOT(onOpenStreaming()));
 
     //Menú Ayuda
     //Al pinchar sobre "Acerca de" se invocará el slot (método) onAcercade().
@@ -127,6 +136,28 @@ void MainWindow::onOpen()
     }
 }
 
+void MainWindow::onOpenStreaming()
+{
+
+    //Se crea al diálogo de tipo "openStreamingDialog" que permitirá introducir la URL que se quiere reproducir por streaming en el
+    // reproductor.
+    openStreamingDialog openStreamingVentana(this);
+    openStreamingVentana.exec();
+
+    //Cuando se cierra la ventana se ejecutarán las siguientes líneas:
+    //Se obtiene la url que se ha introducido en el cuadro de texto.
+    //La ventana se puede cerrar en la X o pulsando en el botón "btnConfirmarURL", pues así se ha programado en la
+    // parte del diseñador.
+    QString URL = openStreamingVentana.getURL();
+
+    if (URL != "") {
+        //Se indica al reproductor cual es su origen de datos.
+        mediaPlayer_->setMedia(QUrl(URL));
+        //Ejemplo: http://stream.electroradio.ch:26630/
+    }
+}
+
+
 void MainWindow::onSeek()
 {
     mediaPlayer_->setPosition(playerSlider_->sliderPosition());
@@ -150,12 +181,14 @@ void MainWindow::onVolumeChanged(int volume)
 
 void MainWindow::onMetadatos()
 {
+    //Se crea el diálogo de tipo "metadaDialog" que muetra los metados del archivo cargado en el reproductor.
     metadaDialog meta(mediaPlayer_, this);
     meta.exec();
 }
 
 void MainWindow::onAcercaDe()
 {
+       //Se crea el diálogo de tipo "QDialogMensaje" que muestra la información que queramos.
        QDialogMensaje dialogMensaje("Alberto AG", this);
        dialogMensaje.exec();
 }

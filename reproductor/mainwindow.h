@@ -15,6 +15,7 @@
 
 #include "qdialogmensaje.h"
 #include "metadadialog.h"
+#include "openstreamingdialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -43,6 +44,8 @@ private:
     QMenu* mnuArchivo_;
     //Acción Abrir del menú Archivo.
     QAction* actArchivoAbrir_;
+    //Acción Abrir Streaming (URL) del menú Archivo.
+    QAction* actArchivoAbrirStreaming_;
 
     //Opción Ayuda para la barra de menú.
     QMenu* mnuAyuda_;
@@ -56,6 +59,7 @@ private:
 
 private slots:
     void onOpen();
+    void onOpenStreaming();
     void onSeek();
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);    

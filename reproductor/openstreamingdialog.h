@@ -15,6 +15,8 @@ public:
     explicit openStreamingDialog(QWidget *parent = 0);
     ~openStreamingDialog();
 
+    QString getURL();
+
 private:
     Ui::openStreamingDialog *ui;
 };

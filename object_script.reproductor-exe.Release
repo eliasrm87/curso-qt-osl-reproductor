@@ -1,0 +1,12 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\qdialogmensaje.o
+./release\metadadialog.o
+./release\openstreamingdialog.o
+./release\qrc_resources.o
+./release\moc_mainwindow.o
+./release\moc_qdialogmensaje.o
+./release\moc_metadadialog.o
+./release\moc_openstreamingdialog.o
+);
