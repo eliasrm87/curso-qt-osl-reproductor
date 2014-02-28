@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mediaPlayer_->setVolume(100);
     videoWidget_->setAspectRatioMode(Qt::KeepAspectRatio);
     volumeSlider_->setRange(0, 100);
-    volumeSlider_->setSliderPosition(100);
+    volumeSlider_->setSliderPosition(75);
 
     //Populate grid layout
     lytMain_->addWidget(videoWidget_,  0, 0, 1, 5);
@@ -42,6 +42,32 @@ MainWindow::MainWindow(QWidget *parent) :
     btnPlay_->setIcon(QIcon(QPixmap(":/icons/resources/play.png")));
     btnStop_->setIcon(QIcon(QPixmap(":/icons/resources/stop.png")));
 
+    //Menus
+    mainMenu_ = new QMenuBar(this);
+
+    menusFile_ = new QMenu(tr("&File"), this );
+    mainMenu_ -> addMenu(menusFile_);
+    setMenuBar(mainMenu_);
+
+    actionOpenFile_ = new QAction( tr("&Open"),this );
+    actionOpenFile_ -> setShortcut( QKeySequence ( Qt::CTRL + Qt::Key_O ) );
+    menusFile_ -> addAction(actionOpenFile_);
+
+    actionAbout_ = new QAction ( tr("&About"), this);
+    actionAbout_ -> setShortcut( QKeySequence ( Qt::CTRL + Qt::Key_A ) );
+    menusFile_ -> addAction(actionAbout_);
+
+    actionFullScreen_ = new QAction ( tr("&FullScren"), this);
+    actionFullScreen_ -> setShortcut( QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+    menusFile_ ->addAction(actionFullScreen_);
+
+    menusMetadato_ = new QMenu(tr("&Metadata"), this );
+    mainMenu_ -> addMenu(menusMetadato_);
+
+    actionShowMetadata = new QAction ( tr("Show Metadata"),this);
+    menusMetadato_ -> addAction(actionShowMetadata);
+
+
     //Connections
     connect(btnOpen_,      SIGNAL(pressed()),               this,         SLOT(onOpen()));
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
@@ -51,6 +77,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
+
+    //Connections to menu
+    connect( actionOpenFile_, SIGNAL ( triggered() ), this, SLOT(onOpen_auto() ) );
+    connect( actionAbout_, SIGNAL( triggered() ), this, SLOT(onAbout() ) );
+    connect( actionFullScreen_, SIGNAL( triggered() ), this, SLOT(onFullScreen() ) );
+
+    connect ( actionShowMetadata, SIGNAL(triggered()), this, SLOT( onMetadata() ) );
 }
 
 MainWindow::~MainWindow()
@@ -60,12 +93,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::onOpen()
 {
+    mediaPlayer_->setMedia(QUrl("http://208.92.53.87:80/MAXIMAFM"));
     //Show file open dialog
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                            tr("Abrir archivo"));
-    if (fileName != "") {
-        mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
-    }
+    //QString fileName = QFileDialog::getOpenFileName(this,
+    //                                        tr("Abrir archivo"));
+    //if (fileName != "") {
+    //    mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+    //}
 }
 
 void MainWindow::onSeek()
@@ -87,3 +121,45 @@ void MainWindow::onVolumeChanged(int volume)
 {
     mediaPlayer_->setVolume(volume);
 }
+
+
+void MainWindow::onAbout()
+{
+    QMessageBox::about(this,"About","This is a Qt proyect.");
+}
+
+void MainWindow::onOpen_auto()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                            tr("Abrir archivo"));
+
+    mediaPlayer_->play();
+
+    if (fileName != "") {
+        mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+        mediaPlayer_->play();
+    }
+}
+
+void MainWindow::onFullScreen()
+{
+
+    if ( videoWidget_->isFullScreen() )
+    {
+        videoWidget_->setFullScreen(false);
+    }
+    else
+    {
+        videoWidget_->setFullScreen(true);
+    }
+}
+
+void MainWindow::onMetadata()
+{
+    MetadataDialog md(mediaPlayer_);
+    md.exec();
+}
+
+
+
+

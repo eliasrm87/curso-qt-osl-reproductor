@@ -11,6 +11,16 @@
 #include <QFileDialog>
 #include <QToolButton>
 
+#include <QMessageBox>
+
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+
+#include <iostream>
+
+#include <metadatadialog.h>
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,6 +41,17 @@ private:
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
 
+
+    QMenuBar        *mainMenu_;
+    QMenu           *menusFile_;
+    QAction         *actionOpenFile_;
+    QAction         *actionAbout_;
+
+    QMenu           *menusMetadato_;
+    QAction         *actionShowMetadata;
+
+    QAction         *actionFullScreen_;
+
 private slots:
     void onOpen();
     void onSeek();
@@ -38,6 +59,12 @@ private slots:
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
 
+    void onAbout();
+    void onOpen_auto();
+
+    void onFullScreen();
+
+    void onMetadata();
 };
 
 #endif // MAINWINDOW_H
