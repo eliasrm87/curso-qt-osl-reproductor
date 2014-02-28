@@ -11,6 +11,20 @@
 #include <QFileDialog>
 #include <QToolButton>
 
+#include <QMenuBar>
+#include <QMenu>
+#include <QMessageBox>
+
+#include <QMediaMetaData>
+#include <metadatadialog.h>
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+const QString recientes_="recientes.url";
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,6 +45,21 @@ private:
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
 
+
+    //Variables de menu
+    QMenuBar* mainMenu_;
+    QMenu* mnuArchivo_;
+    QAction* actArchivoAbrir_;
+    QAction* actArchivoSalir_;
+    QMenu *rrecientes_;
+    QAction *actRec_;
+    QAction* actArchivoRecientes_;
+    QMenu *mnuVer_;
+    QAction* actMetadatos_;
+    QMenu* mnuAyuda_;
+    QAction* actAyudaAcerca_;
+
+
 private slots:
     void onOpen();
     void onSeek();
@@ -38,6 +67,14 @@ private slots:
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
 
+    void rAbrir();
+    void rSalir();
+    void rguardar_Recientes(QString ultimo);
+    void rmostrar_Recientes();
+    void rAcercaDe();
+    void rMetadatos();
+    void onOpen_streaming(QString cad);
 };
+
 
 #endif // MAINWINDOW_H
