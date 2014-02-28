@@ -1,0 +1,8 @@
+file:///home/curso/Escritorio/curso-qt-osl-reproductor/Sample_music.ogg
+file:///home/curso/Escritorio/curso-qt-osl-reproductor/Sample_music.ogg
+file:///home/curso/Escritorio/curso-qt-osl-reproductor/Sample_music.ogg
+file:///home/curso/Escritorio/curso-qt-osl-reproductor/Sample_music.ogg
+file:///home/curso/Escritorio/Los_Simpsons_13x16.avi
+file:///home/curso/Escritorio/curso-qt-osl-reproductor/Sample_music.ogg
+file:///home/curso/Escritorio/Los_Simpsons_13x16.avi
+file:///home/curso/Escritorio/Los_Simpsons_13x16.avi
