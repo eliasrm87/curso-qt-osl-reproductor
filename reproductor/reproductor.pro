@@ -14,17 +14,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     metadatadialog.cpp \
-    urldialog.cpp
+    urldialog.cpp \
+    imagedialog.cpp
 
 HEADERS  += mainwindow.h \
     metadatadialog.h \
-    urldialog.h
+    urldialog.h \
+    imagedialog.h
 
 RESOURCES += \
     resources.qrc
 
 FORMS += \
     metadatadialog.ui \
-    urldialog.ui
+    urldialog.ui \
+    imagedialog.ui
 
 

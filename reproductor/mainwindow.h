@@ -20,6 +20,14 @@
 #include <QListWidget>
 #include <QDockWidget>
 #include <QMediaMetaData>
+#include <QCamera>
+#include <QCameraViewfinder>
+#include <QMediaPlaylist>
+#include <QRegExp>
+#include <QLabel>
+#include <QSystemTrayIcon>
+#include <QComboBox>
+
 
 #include "metadatadialog.h"
 
@@ -44,6 +52,10 @@ private:
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
     QToolButton*        btnFull_;
+    QToolButton*        btnCam_;
+    QToolButton*        btnRepeat_;
+    QToolButton*        btnSecuential_;
+    QToolButton*        btnRandom_;
     QMenuBar*           mainMenu_;
     QMenu*              mnuArchivo_;
     QMenu*              mnuAyuda_;
@@ -55,8 +67,21 @@ private:
     QAction*            actArchivoSalir_;
     QAction*            actAyudaAcerca_;
     QAction*            actVerFull_;
+    QAction*            actArchivoUrl_;
+    QAction*            actArchivoCam_;
+    QAction*            actArchivoAbrir_;
+    QAction*            actVerImagen_;
+    QAction*            actArchivoPlaylist_;
 
-    QDockWidget*       dock_;
+    QIcon              icon_ ;
+
+
+    QDockWidget*        dock_;
+    QMediaPlaylist*     playlist_;
+
+
+    QSystemTrayIcon *trayIcon_;
+    QComboBox *iconComboBox_;
 
 private slots:
     void onOpen();
@@ -70,6 +95,16 @@ private slots:
     void mostrarRecientes();
     void setReciente();
     void mostrarMetadata();
+    void onOpenURL();
+    void onOpenCam();
+    void onOpenPlaylist();
+    void propiedadesImagen();
+    void reproducirRepeat();
+    void reproducirSecuential();
+    void reproducirRandom();
+    void verSubtitulos();
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void setIcon();
 
 };
 

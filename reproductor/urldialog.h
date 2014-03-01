@@ -17,6 +17,10 @@ public:
 
 private:
     Ui::UrlDialog *ui;
+    QString url_;
+
+public slots:
+    QString getNuevaUrl();
 };
 
 #endif // URLDIALOG_H

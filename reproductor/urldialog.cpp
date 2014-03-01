@@ -6,9 +6,15 @@ UrlDialog::UrlDialog(QWidget *parent) :
     ui(new Ui::UrlDialog)
 {
     ui->setupUi(this);
+
 }
 
 UrlDialog::~UrlDialog()
 {
     delete ui;
+}
+
+QString UrlDialog::getNuevaUrl() {
+    url_ = ui->lineEdit->text();
+    return url_;
 }

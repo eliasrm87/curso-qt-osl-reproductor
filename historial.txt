@@ -1,21 +1,5 @@
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/curso-qt-osl-reproductor/Sample_music.ogg
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
-/home/curso/Descargas/Los_Simpsons_13x16.avi
-/home/curso/Descargas/big_buck_bunny_480p_surround-fix.avi
+/cosas/videos/apisec_papas_diciembre2013/IMAG0027.AVI
+/cosas/colectivos/apisec/juguetes 2013-2014/juguetes.m2t
+/cosas/videos/apisec_papas_diciembre2013/IMAG0028.AVI
+/cosas/colectivos/apisec/juguetes 2013-2014/juguetes.m2t
+/cosas/videos/dondeEstaAMEC/dondeEstaAMEC2.m2t
