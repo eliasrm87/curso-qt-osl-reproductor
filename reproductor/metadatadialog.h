@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QMediaPlayer>
 #include <QMediaMetaData>
+#include <QListWidget>
 
 namespace Ui {
 class MetadataDialog;
@@ -20,7 +21,8 @@ public:
 private:
     Ui::MetadataDialog *ui;
     QMediaPlayer *player_;
-    void addMetadata(QString key);
+    QStringList metadatosDisponibles_;
+    void addMetadata(QStringList metadatos);
 };
 
 #endif // METADATADIALOG_H

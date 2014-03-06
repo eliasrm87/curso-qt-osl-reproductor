@@ -115,16 +115,18 @@ void MainWindow::onOpen()
 
     if (fileName != "") {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+
+        // Reproducir automáticamente
+        mediaPlayer_->play();
+
+        // Agregar a recientes
+        this->agregarReciente(fileName);
+
+        // Refrescar historial de recientes
+        this->alRecientes();
     }
 
-    // Reproducelo automáticamente
-    mediaPlayer_->play();
 
-    // Agregar a recientes
-    this->agregarReciente(fileName);
-
-    // Refrescar historial de recientes
-    this->alRecientes();
 }
 
 void MainWindow::onSeek()

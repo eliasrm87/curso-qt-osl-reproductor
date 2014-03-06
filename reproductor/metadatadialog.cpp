@@ -16,8 +16,8 @@ MetadataDialog::MetadataDialog(QMediaPlayer *player, QWidget *parent) :
         ui->listMetadata->insertItem(ui->listMetadata->count(), mensaje);
     }
     else {
-        addMetadata(QMediaMetaData::Title);
-        addMetadata(QMediaMetaData::AudioCodec);
+        metadatosDisponibles_ = player_->availableMetaData();
+        addMetadata(metadatosDisponibles_);
     }
 }
 
@@ -26,8 +26,12 @@ MetadataDialog::~MetadataDialog()
     delete ui;
 }
 
-void MetadataDialog::addMetadata(QString key)
+void MetadataDialog::addMetadata(QStringList metadatos)
 {
-    ui->listMetadata->insertItem(ui->listMetadata->count(),
-                                 key + ": " + player_->metaData(key).toString());
+    QString dato;
+    foreach (dato, metadatos) {
+        ui->listMetadata->insertItem(ui->listMetadata->count(),
+                                     dato + ": " + player_->metaData(dato).toString());
+    }
+
 }
