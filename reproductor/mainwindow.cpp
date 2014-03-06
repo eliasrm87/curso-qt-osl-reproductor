@@ -70,8 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     actArchivoAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     mnuArchivo_->addAction(actArchivoAbrir_);
 
-    actArchivoRecientes_ = new QMenu(tr("Recientes"), this);
-    mnuArchivo_->addMenu(actArchivoRecientes_);
+    mnuArchivoRecientes_ = new QMenu(tr("Recientes"), this);
+    mnuArchivo_->addMenu(mnuArchivoRecientes_);
 
     actVerMetadatos_ = new QAction(tr("Metadatos"), this);
     mnuVer_->addAction(actVerMetadatos_);
@@ -94,6 +94,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Hace que funcione el eventfilter
     videoWidget_->installEventFilter(this);
+
+    // Mostramos el historial de recientes
+    this->alRecientes();
 
 }
 
@@ -118,7 +121,10 @@ void MainWindow::onOpen()
     mediaPlayer_->play();
 
     // Agregar a recientes
-    this->setRecientes(fileName);
+    this->agregarReciente(fileName);
+
+    // Refrescar historial de recientes
+    this->alRecientes();
 }
 
 void MainWindow::onSeek()
@@ -151,10 +157,10 @@ void MainWindow::pantallaCompleta()
     }
 }
 
-void MainWindow::setRecientes(QString path)
-{
-    actArchivoRecientes_->addAction(new QAction(path, this));
-}
+//void MainWindow::setRecientes(QString path)
+//{
+//    actArchivoRecientes_->addAction(new QAction(path, this));
+//}
 
 void MainWindow::showMetadata()
 {
@@ -166,6 +172,67 @@ void MainWindow::alAcercade()
 {
     AboutDialog acercaDe;
     acercaDe.exec();
+}
+
+void MainWindow::alRecientes()
+{
+    QFile recientes("../recientes.txt");
+    if (recientes.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+        // Eliminamos las acciones (path) del menú si ya se habían añadido
+        mnuArchivoRecientes_->clear();
+
+        // Obtenemos las reproducciones recientes
+        QTextStream in(&recientes);
+        while (!in.atEnd()) {
+            QString archivo = in.readLine();
+            QAction *actAbrirArchivo = new QAction(archivo, this);
+            mnuArchivoRecientes_->addAction(actAbrirArchivo);
+            connect(actAbrirArchivo, SIGNAL(triggered()), this, SLOT(abrirReciente()));
+        }
+
+        // Si hay acciones recientes, damos opción de borrado
+        if (recientes.size() != 0) {
+            mnuArchivoRecientes_->addSeparator();
+            actArchivoBorrarRecientes_ = new QAction(tr("Borrar historial de recientes"), this);
+            mnuArchivoRecientes_->addAction(actArchivoBorrarRecientes_);
+            connect(actArchivoBorrarRecientes_, SIGNAL(triggered()), this, SLOT(borrarRecientes()));
+        }
+        recientes.close();
+    }
+}
+
+void MainWindow::agregarReciente(QString archivo)
+{
+    QFile recientes("../recientes.txt");
+    if (recientes.open(QIODevice::Append)) {
+        QTextStream out(&recientes);
+        out << archivo << endl;
+        recientes.close();
+    }
+}
+
+void MainWindow::abrirReciente()
+{
+    QAction *accion = (QAction*)QObject::sender();
+    mediaPlayer_->setMedia(QUrl::fromLocalFile(accion->text()));
+    mediaPlayer_->play();
+}
+
+void MainWindow::borrarRecientes()
+{
+    // Vaciamos el fichero de recientes
+    QFile recientes("../recientes.txt");
+    if (recientes.open(QIODevice::Append | QIODevice::Text)) {
+        recientes.resize(0);
+        recientes.close();
+
+        // Eliminamos las acciones (path) del menú
+        mnuArchivoRecientes_->clear();
+    }
+
+    // Refrescamos la barra
+    this->alRecientes();
 }
 
 // Para poder pillar bien lo de pantalla completa hay que pasar esta

@@ -43,12 +43,13 @@ private:
 
     // Elementos del menú
     QMenu *mnuArchivo_;
+    QMenu *mnuArchivoRecientes_;
     QMenu *mnuVer_;
     QMenu *mnuAyuda_;
 
     // Acciones de Archivo
     QAction *actArchivoAbrir_;
-    QMenu *actArchivoRecientes_;
+    QAction *actArchivoBorrarRecientes_;
 
     // Acciones de Ver
     QAction *actVerPantallaCompleta_;
@@ -65,9 +66,15 @@ private slots:
     void onVolumeChanged(int volume);
     bool eventFilter(QObject *obj, QEvent *event);
     void pantallaCompleta();
-    void setRecientes(QString path);
     void showMetadata();
     void alAcercade();
+
+    // Nota: Si la ruta del archivo es demasiado larga
+    // el menú contextual se come toda la pantalla
+    void alRecientes();
+    void agregarReciente(QString archivo);
+    void abrirReciente();
+    void borrarRecientes();
 
 };
 
