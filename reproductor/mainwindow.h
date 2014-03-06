@@ -16,6 +16,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <metadatadialog.h>
+#include <aboutdialog.h>
 
 class MainWindow : public QMainWindow
 {
@@ -66,6 +67,7 @@ private slots:
     void pantallaCompleta();
     void setRecientes(QString path);
     void showMetadata();
+    void alAcercade();
 
 };
 

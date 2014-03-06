@@ -90,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actArchivoAbrir_, SIGNAL(triggered()), this, SLOT(onOpen()));
     connect(actVerPantallaCompleta_, SIGNAL(triggered()), this, SLOT(pantallaCompleta()));
     connect(actVerMetadatos_, SIGNAL(triggered()), this, SLOT(showMetadata()));
+    connect(actAyudaAcercaDe_, SIGNAL(triggered()), this, SLOT(alAcercade()));
 
     // Hace que funcione el eventfilter
     videoWidget_->installEventFilter(this);
@@ -159,6 +160,12 @@ void MainWindow::showMetadata()
 {
     MetadataDialog videoData(mediaPlayer_);
     videoData.exec();
+}
+
+void MainWindow::alAcercade()
+{
+    AboutDialog acercaDe;
+    acercaDe.exec();
 }
 
 // Para poder pillar bien lo de pantalla completa hay que pasar esta
