@@ -2,7 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMediaMetaData>
 #include <QGridLayout>
+#include <QMenuBar>
+#include <QMenu>
+#include <QEvent>
+#include <QMouseEvent>
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QVideoWidget>
@@ -10,6 +15,9 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QToolButton>
+#include "dialog.h"
+#include "mdatos.h"
+#include "dialogforstreaming.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,8 +26,19 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
+    bool eventFilter(QObject *obj, QEvent *event);
 private:
+    QAction *           abrir_;
+    Dialog *            dialog_;
+    QAction *           AcercaDe_;
+    QAction *           PantCom_;
+    QAction *           verMetadatos_;
+    QAction *           str_;
+    QMenu    *          menuArchivo_;
+    QMenu   *           menuAyuda_;
+    QMenu  *            ver_;
+    QMenu *             recientes_;
+    QMenu *             metadatos_;
     QGridLayout*        lytMain_;
     QWidget*            wgtMain_;
     QMediaPlayer*       mediaPlayer_;
@@ -37,6 +56,11 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
+    void acercade_s();
+    void fullScreen_s();
+    void meta_s();
+    void open_str();
+    void open_str_url(QUrl);
 
 };
 
