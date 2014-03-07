@@ -57,11 +57,13 @@ MainWindow::MainWindow(QWidget *parent) :
     mnuArchivo_ = new QMenu(tr("&Archivo"), this);
     mnuVer_ = new QMenu(tr("&Ver"), this);
     mnuAyuda_ = new QMenu(tr("&Ayuda"), this);
+    mnuStreaming_ = new QMenu(tr("&Streaming"), this);
 
     // Añadimos los elementos al menú
     mainMenu_->addMenu(mnuArchivo_);
     mainMenu_->addMenu(mnuVer_);
     mainMenu_->addMenu(mnuAyuda_);
+    mainMenu_->addMenu(mnuStreaming_);
 
     // Inicializamos acciones de los elementos del menú
     // Añadimos las acciones a los elementos
@@ -83,6 +85,9 @@ MainWindow::MainWindow(QWidget *parent) :
     actAyudaAcercaDe_ = new QAction(tr("Acerca de"), this);
     mnuAyuda_->addAction(actAyudaAcercaDe_);
 
+    actStreamingReproducir_ = new QAction(tr("Reproducir fuente"), this);
+    mnuStreaming_->addAction(actStreamingReproducir_);
+
     // Añadir barra de menús a la ventana
     setMenuBar(mainMenu_);
 
@@ -91,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actVerPantallaCompleta_, SIGNAL(triggered()), this, SLOT(pantallaCompleta()));
     connect(actVerMetadatos_, SIGNAL(triggered()), this, SLOT(showMetadata()));
     connect(actAyudaAcercaDe_, SIGNAL(triggered()), this, SLOT(alAcercade()));
+    connect(actStreamingReproducir_, SIGNAL(triggered()), this, SLOT(alStreaming()));
 
     // Hace que funcione el eventfilter
     videoWidget_->installEventFilter(this);
@@ -98,6 +104,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Mostramos el historial de recientes
     this->alRecientes();
 
+    // Inicializamos una fuente de streaming por defecto
+    maximaFM_ = "http://208.92.53.87:80/MAXIMAFM";
 }
 
 MainWindow::~MainWindow()
@@ -235,6 +243,25 @@ void MainWindow::borrarRecientes()
 
     // Refrescamos la barra
     this->alRecientes();
+}
+
+void MainWindow::alStreaming()
+{
+    bool aceptar;
+
+    // Recogemos la fuente de streaming
+    QString url = QInputDialog::getText(this, tr("Reproducir fuente de streaming"),
+                                                  tr("Introduzca la URL:"),
+                                                  QLineEdit::Normal,
+                                                  maximaFM_,
+                                                  &aceptar);
+    QRegExp whiteSpaces("^\\s+$");
+
+    // Se comprueba que la página no esté vacía
+    if (aceptar && !url.isEmpty() && !whiteSpaces.exactMatch(url)) {
+        mediaPlayer_->setMedia(QUrl::fromLocalFile(url));
+        mediaPlayer_->play();
+    }
 }
 
 // Para poder pillar bien lo de pantalla completa hay que pasar esta

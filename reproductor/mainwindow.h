@@ -15,6 +15,7 @@
 #include <QAction>
 #include <QMouseEvent>
 #include <QEvent>
+#include <QInputDialog>
 #include <metadatadialog.h>
 #include <aboutdialog.h>
 
@@ -46,6 +47,7 @@ private:
     QMenu *mnuArchivoRecientes_;
     QMenu *mnuVer_;
     QMenu *mnuAyuda_;
+    QMenu *mnuStreaming_;
 
     // Acciones de Archivo
     QAction *actArchivoAbrir_;
@@ -57,6 +59,10 @@ private:
 
     // Acciones de Ayuda
     QAction *actAyudaAcercaDe_;
+
+    // Acciones de Streaming
+    QAction *actStreamingReproducir_;
+    QString maximaFM_;
 
 private slots:
     void onOpen();
@@ -75,6 +81,7 @@ private slots:
     void agregarReciente(QString archivo);
     void abrirReciente();
     void borrarRecientes();
+    void alStreaming();
 
 };
 
