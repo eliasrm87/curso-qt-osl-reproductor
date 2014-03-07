@@ -10,6 +10,14 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+#include <QEvent>
+#include <QMouseEvent>
+#include "metadatadialog.h"
+#include "dialogstreaming.h"
+#include <QMediaMetaData>
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +38,13 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+    QMenu*              mnuArchivo_;
+    QAction*            actAbrir_;
+    QMenu*              mnuVer_;
+    QAction*            actFullScreen_;
+    QMenu*              mnuRecent_;
+    QAction*            actMetaData_;
+    QAction*            actStreaming_;
 
 private slots:
     void onOpen();
@@ -37,7 +52,11 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
-
+    void onFullScreen();
+    bool eventFilter(QObject *obj, QEvent *event);
+    void onRecentFiles(QAction *path);
+    void onMetaData();
+    void onStreaming();
 };
 
 #endif // MAINWINDOW_H
