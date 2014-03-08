@@ -27,6 +27,8 @@
 #include <QLabel>
 #include <QSystemTrayIcon>
 #include <QComboBox>
+#include <QVideoWindowControl>
+
 
 
 #include "metadatadialog.h"

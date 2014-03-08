@@ -1,9 +1,13 @@
 #ifndef IMAGEDIALOG_H
 #define IMAGEDIALOG_H
 
+#define SLIDER_RANGE 8
+
 #include <QDialog>
 #include <QMediaPlayer>
 #include <QVideoWindowControl>
+#include "mainwindow.h"
+#include <QDebug>
 
 namespace Ui {
 class ImageDialog;
@@ -14,16 +18,13 @@ class ImageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ImageDialog(QMediaPlayer *player, QWidget *parent = 0);
+    explicit ImageDialog(QMediaPlayer *player, QVideoWidget *video, QWidget *parent = 0);
     ~ImageDialog();
 
 private:
     Ui::ImageDialog *ui;
 
-private slots:
-    void onBrilloChanged(int brillo);
-    void onContrasteChanged(int constraste);
-    void onSaturacionChanged(int saturacion);
+
 };
 
 #endif // IMAGEDIALOG_H

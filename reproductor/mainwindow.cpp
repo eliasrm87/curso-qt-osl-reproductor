@@ -313,7 +313,7 @@ void MainWindow::setReciente () {
 
 
 void MainWindow::propiedadesImagen () {
-    ImageDialog id(mediaPlayer_, this);
+    ImageDialog id(mediaPlayer_, videoWidget_);
     id.exec();
 
   /*  qDebug() << videoWidget_->contrast();
