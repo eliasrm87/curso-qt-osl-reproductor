@@ -2,6 +2,8 @@
 #include <QList>
 #include <QLabel>
 #include <QMessageBox>
+#include <QMediaPlaylist>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -49,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Setup widwgets
     videoWidget_->setMinimumSize(400, 400);
+    mediaPlayer_->setPlaylist(new QMediaPlaylist(this));
     mediaPlayer_->setVideoOutput(videoWidget_);
     mediaPlayer_->setVolume(100);
     videoWidget_->setAspectRatioMode(Qt::KeepAspectRatio);
@@ -108,14 +111,64 @@ void MainWindow::addRecentFile(QString fileName) {
 
 void MainWindow::openFile(QString fileName) {
     if (!fileName.isEmpty()) {
-        mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+        mediaPlayer_->playlist()->clear();
+
+        if (fileName.endsWith(".m3u"))
+            openM3UPlaylist(fileName);
+        else if (fileName.endsWith(".pls"))
+            openPLSPlaylist(fileName);
+        else
+            mediaPlayer_->playlist()->addMedia(mediaFromString(fileName));
+
         addRecentFile(fileName);
     }
 }
 
+void MainWindow::openM3UPlaylist(QString fileName) {
+    QStringList lines = getFileContents(fileName).split("\n");
+    for (QStringList::iterator i = lines.begin(); i != lines.end(); ++i) {
+        QString line = *i;
+        if (!line.startsWith('#'))
+            mediaPlayer_->playlist()->addMedia(mediaFromString(line));
+    }
+}
+
+void MainWindow::openPLSPlaylist(QString fileName) {
+    QSettings playlist(fileName, QSettings::IniFormat);
+
+    playlist.beginGroup("playlist");
+    int numEntries = playlist.value("NumberOfEntries", 0).toInt();
+    for (int i = 1; i <= numEntries; i++) {
+        QString trackPath = playlist.value(QString("File%1").arg(i)).toString();
+        QString trackTitle = playlist.value(QString("Title%1").arg(i)).toString();
+        int trackLength = playlist.value(QString("Length%1").arg(i), -1).toInt();
+
+        qDebug() << trackPath << " " << mediaFromString(trackPath).canonicalUrl();
+        mediaPlayer_->playlist()->addMedia(mediaFromString(trackPath));
+    }
+    playlist.endGroup();
+}
+
+QMediaContent MainWindow::mediaFromString(QString fileNameOrURL) {
+    if (!(fileNameOrURL.startsWith("http://") || fileNameOrURL.startsWith("https://")))
+        return QUrl::fromLocalFile(fileNameOrURL);
+
+    return QUrl(fileNameOrURL);
+}
+
+QString MainWindow::getFileContents(QString fileName) {
+    QFile file(fileName);
+    file.open(QFile::ReadOnly);
+    QString contents = file.readAll();
+    file.close();
+
+    return contents;
+}
+
 void MainWindow::onOpen() {
     //Show file open dialog
-    openFile(QFileDialog::getOpenFileName(this, tr("Abrir archivo")));
+    openFile(QFileDialog::getOpenFileName(this, tr("Abrir archivo"), "",
+                                          tr("Archivos de sonido (*.mp3 *.wav *.ogg);;Listas de reproducción (*.m3u *.pls)")));
 }
 
 void MainWindow::onSeek() {

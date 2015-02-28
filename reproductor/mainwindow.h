@@ -49,6 +49,10 @@ private:
 
     void addRecentFile(QString fileName);
     void openFile(QString fileName);
+    void openM3UPlaylist(QString fileName);
+    void openPLSPlaylist(QString fileName);
+    QString getFileContents(QString fileName);
+    QMediaContent mediaFromString(QString fileNameOrURL);
 
 private slots:
     void onOpen();
