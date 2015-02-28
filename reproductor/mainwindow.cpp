@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QList>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -8,6 +9,31 @@ MainWindow::MainWindow(QWidget *parent) :
     lytMain_ = new QGridLayout(wgtMain_);
     wgtMain_->setLayout(lytMain_);
     setCentralWidget(wgtMain_);
+
+    //Create menus and actions
+    mainMenu_ = new QMenuBar(this);
+    fileMenu_ = new QMenu(tr("&Archivo"), this);
+    recentMenu_ = new QMenu(tr("Archivos recientes"), this);
+
+    viewMenu_ = new QMenu(tr("&Ver"), this);
+    helpMenu_ = new QMenu(tr("&Ayuda"), this);
+
+    setMenuBar(mainMenu_);
+    mainMenu_->addMenu(fileMenu_);
+    mainMenu_->addMenu(viewMenu_);
+    mainMenu_->addMenu(helpMenu_);
+
+    openAct_ = new QAction(tr("&Abrir..."), this);
+    recentFiles_ = new QActionGroup(this);
+    fullscreenAct_ = new QAction(tr("&Pantalla completa"), this);
+    metadataAct_ = new QAction(tr("&Metadatos..."), this);
+    aboutAct_ = new QAction(tr("&Acerca de..."), this);
+
+    fileMenu_->addAction(openAct_);
+    fileMenu_->addMenu(recentMenu_);
+    viewMenu_->addAction(fullscreenAct_);
+    viewMenu_->addAction(metadataAct_);
+    helpMenu_->addAction(aboutAct_);
 
     //Initialize widgets
     mediaPlayer_  = new QMediaPlayer(this);
@@ -42,6 +68,13 @@ MainWindow::MainWindow(QWidget *parent) :
     btnPlay_->setIcon(QIcon(QPixmap(":/icons/resources/play.png")));
     btnStop_->setIcon(QIcon(QPixmap(":/icons/resources/stop.png")));
 
+    // Actions connections
+    connect(openAct_,       SIGNAL(triggered()),         this, SLOT(onOpen()));
+    connect(recentFiles_,   SIGNAL(triggered(QAction*)), this, SLOT(onOpenRecent(QAction*)));
+    connect(fullscreenAct_, SIGNAL(triggered()),         this, SLOT(onFullScreen()));
+    connect(metadataAct_,   SIGNAL(triggered()),         this, SLOT(onMetadataTriggered()));
+    connect(aboutAct_,      SIGNAL(triggered()),         this, SLOT(onAboutTriggered()));
+
     //Connections
     connect(btnOpen_,      SIGNAL(pressed()),               this,         SLOT(onOpen()));
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
@@ -58,32 +91,59 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::onOpen()
-{
-    //Show file open dialog
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                            tr("Abrir archivo"));
-    if (fileName != "") {
+void MainWindow::addRecentFile(QString fileName) {
+    QAction* fileAct = new QAction(fileName, this);
+
+    QList<QAction*> recent = recentFiles_->actions();
+    for (QList<QAction*>::iterator i = recent.begin(); i != recent.end(); ++i) {
+        if ((*i)->text() == fileName)
+            return;
+    }
+
+    recentMenu_->addAction(fileAct);
+    recentFiles_->addAction(fileAct);
+}
+
+void MainWindow::openFile(QString fileName) {
+    if (!fileName.isEmpty()) {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+        addRecentFile(fileName);
     }
 }
 
-void MainWindow::onSeek()
-{
+void MainWindow::onOpen() {
+    //Show file open dialog
+    openFile(QFileDialog::getOpenFileName(this, tr("Abrir archivo")));
+}
+
+void MainWindow::onSeek() {
     mediaPlayer_->setPosition(playerSlider_->sliderPosition());
 }
 
-void MainWindow::onDurationChanged(qint64 duration)
-{
+void MainWindow::onDurationChanged(qint64 duration) {
     playerSlider_->setRange(0, duration);
 }
 
-void MainWindow::onPositionChanged(qint64 position)
-{
+void MainWindow::onPositionChanged(qint64 position) {
     playerSlider_->setSliderPosition(position);
 }
 
-void MainWindow::onVolumeChanged(int volume)
-{
+void MainWindow::onVolumeChanged(int volume) {
     mediaPlayer_->setVolume(volume);
+}
+
+void MainWindow::onOpenRecent(QAction* act) {
+    openFile(act->text());
+}
+
+void MainWindow::onFullScreen() {
+
+}
+
+void MainWindow::onMetadataTriggered() {
+
+}
+
+void MainWindow::onAboutTriggered() {
+
 }

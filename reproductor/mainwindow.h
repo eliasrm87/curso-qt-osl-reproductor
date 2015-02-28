@@ -11,6 +11,10 @@
 #include <QFileDialog>
 #include <QToolButton>
 
+#include <QAction>
+#include <QMenuBar>
+#include <QMenu>
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -30,6 +34,21 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+    QWidget*            aboutWindow;
+
+    QMenuBar*           mainMenu_;
+    QMenu*              fileMenu_;
+      QAction*            openAct_;
+      QMenu*              recentMenu_;
+      QActionGroup*       recentFiles_;
+    QMenu*              viewMenu_;
+      QAction*            fullscreenAct_;
+      QAction*            metadataAct_;
+    QMenu*              helpMenu_;
+      QAction*            aboutAct_;
+
+    void addRecentFile(QString fileName);
+    void openFile(QString fileName);
 
 private slots:
     void onOpen();
@@ -37,7 +56,10 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
-
+    void onOpenRecent(QAction* act);
+    void onFullScreen();
+    void onMetadataTriggered();
+    void onAboutTriggered();
 };
 
 #endif // MAINWINDOW_H
