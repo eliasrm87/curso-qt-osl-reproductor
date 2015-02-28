@@ -1,6 +1,8 @@
 [playlist]
 NumberOfEntries=2
 Title1=Nombre1
-File1=/home/siga01.stic.ull.es/e5/alu0100226300/curso-qt-osl-reproductor/video_test.mp4
+File1=./video_test.mp4
 Title2=Nombre2
-File2=/home/siga01.stic.ull.es/e5/alu0100226300/curso-qt-osl-reproductor/Sample_music.ogg
+File2=./Sample_music.ogg
+Title3=Nombre3
+File3=http://83.170.89.19:9862
