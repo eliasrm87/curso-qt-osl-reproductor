@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QMenuBar>
+#include <QMenu>
+#include <QLabel>
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QWidget>
@@ -10,6 +13,8 @@
 #include <QSlider>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QMediaMetaData>
+#include <QTextEdit>
 
 class MainWindow : public QMainWindow
 {
@@ -20,8 +25,16 @@ public:
     ~MainWindow();
     
 private:
+    QMenuBar*           mainMenu_;
+    QMenu*              mnuArchivo_;
+    QMenu*              mnuVer_;
+    QMenu*              mnuAyuda_;
     QGridLayout*        lytMain_;
     QWidget*            wgtMain_;
+    QGridLayout*        lytAcercade_;
+    QWidget*            wgtAcercade_;
+    QLabel*             myimage_;
+    QLabel*             texto_;
     QMediaPlayer*       mediaPlayer_;
     QSlider*            playerSlider_;
     QVideoWidget*       videoWidget_;
@@ -30,6 +43,15 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+    QAction*            actArchivoAbrir_;
+    QAction*            actArchivoSalir_;
+    QAction*            actArchivoStream_;
+    QAction*            actArchivoRecientes_;
+    QAction*            actVerFullScreen_;
+    QAction*            actVerMetadatos_;
+    QAction*            actAyudaAcercade_;
+    QTextEdit*          txtEditor_;
+    QPushButton*        botonOk_;
 
 private slots:
     void onOpen();
@@ -37,7 +59,10 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
-
+    void onStream();
+    void onFullscreen();
+    void onMetadatos();
+    void onAcercade();
 };
 
 #endif // MAINWINDOW_H
