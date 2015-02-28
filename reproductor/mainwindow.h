@@ -11,6 +11,12 @@
 #include <QFileDialog>
 #include <QToolButton>
 
+#include <QMenuBar>
+#include <QMenu>
+#include <QDialog>
+#include <QLabel>
+#include "myqvideowidget.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,12 +30,23 @@ private:
     QWidget*            wgtMain_;
     QMediaPlayer*       mediaPlayer_;
     QSlider*            playerSlider_;
-    QVideoWidget*       videoWidget_;
+    myQvideoWidget*       videoWidget_;
     QSlider*            volumeSlider_;
     QToolButton*        btnOpen_;
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+
+    QMenuBar*           mainMenu_;
+    QMenu*              mnuArchivo_;
+    QAction*            actArchivoAbrir_;
+    QMenu*              mnuAyuda_;
+    QAction*            actAcercaDe_;
+    QDialog*            qdAcercaDe_;
+    QGridLayout*        layAcercaDe_;
+    QLabel*             labAcercaDe_;
+    QMenu*              mnuVer;
+    QAction*            actPantallaCompleta_;
 
 private slots:
     void onOpen();
@@ -37,6 +54,10 @@ private slots:
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
+
+    void alAcercaDe();
+    void crearVentanaAcercaDe();
+    void pantallaCompleta();
 
 };
 
