@@ -4,10 +4,10 @@
 #include <QMessageBox>
 #include <QMediaPlaylist>
 #include <QSettings>
+#include <QTextStream>
+#include <QCloseEvent>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
-{
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     //Create central widget and set main layout
     wgtMain_ = new QWidget(this);
     lytMain_ = new QGridLayout(wgtMain_);
@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
     viewMenu_->addAction(metadataAct_);
     helpMenu_->addAction(aboutAct_);
 
+    readRecentFileList();
+
     //Initialize widgets
     mediaPlayer_  = new QMediaPlayer(this);
     playerSlider_ = new QSlider(Qt::Horizontal, this);
@@ -48,30 +50,41 @@ MainWindow::MainWindow(QWidget *parent) :
     btnPlay_      = new QToolButton(this);
     btnPause_     = new QToolButton(this);
     btnStop_      = new QToolButton(this);
+    btnRepeat_    = new QToolButton(this);
+    btnRandom_    = new QToolButton(this);
+
+    QMediaPlaylist* playlist = new QMediaPlaylist(this);
+    playlist->setPlaybackMode(QMediaPlaylist::Sequential);
 
     //Setup widwgets
     videoWidget_->setMinimumSize(400, 400);
-    mediaPlayer_->setPlaylist(new QMediaPlaylist(this));
+    mediaPlayer_->setPlaylist(playlist);
     mediaPlayer_->setVideoOutput(videoWidget_);
     mediaPlayer_->setVolume(100);
     videoWidget_->setAspectRatioMode(Qt::KeepAspectRatio);
     volumeSlider_->setRange(0, 100);
     volumeSlider_->setSliderPosition(100);
+    btnRepeat_->setCheckable(true);
+    btnRandom_->setCheckable(true);
 
     //Populate grid layout
-    lytMain_->addWidget(videoWidget_,  0, 0, 1, 5);
-    lytMain_->addWidget(playerSlider_, 1, 0, 1, 5);
+    lytMain_->addWidget(videoWidget_,  0, 0, 1, 7);
+    lytMain_->addWidget(playerSlider_, 1, 0, 1, 7);
     lytMain_->addWidget(btnOpen_,      2, 0, 1, 1);
     lytMain_->addWidget(btnPlay_,      2, 1, 1, 1);
     lytMain_->addWidget(btnPause_,     2, 2, 1, 1);
     lytMain_->addWidget(btnStop_,      2, 3, 1, 1);
     lytMain_->addWidget(volumeSlider_, 2, 4, 1, 1);
+    lytMain_->addWidget(btnRepeat_,    2, 5, 1, 1);
+    lytMain_->addWidget(btnRandom_,    2, 6, 1, 1);
 
     //Buttons icons
     btnOpen_->setIcon(QIcon(QPixmap(":/icons/resources/eject.png")));
     btnPause_->setIcon(QIcon(QPixmap(":/icons/resources/pause.png")));
     btnPlay_->setIcon(QIcon(QPixmap(":/icons/resources/play.png")));
     btnStop_->setIcon(QIcon(QPixmap(":/icons/resources/stop.png")));
+    btnRepeat_->setIcon(QIcon(QPixmap(":/icons/resources/loop.png")));
+    btnRandom_->setIcon(QIcon(QPixmap(":/icons/resources/random.png")));
 
     // Actions connections
     connect(openAct_,       SIGNAL(triggered()),         this, SLOT(onOpen()));
@@ -85,6 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
     connect(btnPause_,     SIGNAL(pressed()),               mediaPlayer_, SLOT(pause()));
     connect(btnStop_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(stop()));
+    connect(btnRepeat_,    SIGNAL(toggled(bool)),           this,         SLOT(onRepeatChange(bool)));
+    connect(btnRandom_,    SIGNAL(toggled(bool)),           this,         SLOT(onRandomChange(bool)));
     connect(playerSlider_, SIGNAL(sliderReleased()),        this,         SLOT(onSeek()));
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
@@ -96,10 +111,45 @@ MainWindow::~MainWindow()
 
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    writeRecentFileList();
+    event->accept();
+}
+
+void MainWindow::readRecentFileList() {
+    QFile file("lastopened.m3u");
+    file.open(QFile::ReadOnly);
+
+    if (file.isOpen()) {
+        QTextStream in(&file);
+        while (!in.atEnd())
+            addRecentFile(in.readLine());
+        file.close();
+    }
+}
+
+void MainWindow::writeRecentFileList() {
+    QFile file("lastopened.m3u");
+    file.open(QFile::WriteOnly);
+
+    if (file.isOpen()) {
+        QTextStream out(&file);
+
+        QList<QAction*> recent = recentFiles_->actions();
+        for (QList<QAction*>::iterator i = recent.begin(); i != recent.end(); ++i)
+            out << (*i)->text() << "\n";
+
+        file.close();
+    }
+}
+
 void MainWindow::addRecentFile(QString fileName) {
     QAction* fileAct = new QAction(fileName, this);
 
     QList<QAction*> recent = recentFiles_->actions();
+    if (recent.size() == MAX_RECENT_FILES_LENGTH)
+      recent.removeFirst();
+
     for (QList<QAction*>::iterator i = recent.begin(); i != recent.end(); ++i) {
         if ((*i)->text() == fileName)
             return;
@@ -140,10 +190,9 @@ void MainWindow::openPLSPlaylist(QString fileName) {
     int numEntries = playlist.value("NumberOfEntries", 0).toInt();
     for (int i = 1; i <= numEntries; i++) {
         QString trackPath = playlist.value(QString("File%1").arg(i)).toString();
-        QString trackTitle = playlist.value(QString("Title%1").arg(i)).toString();
-        int trackLength = playlist.value(QString("Length%1").arg(i), -1).toInt();
+        //QString trackTitle = playlist.value(QString("Title%1").arg(i)).toString();
+        //int trackLength = playlist.value(QString("Length%1").arg(i), -1).toInt();
 
-        qDebug() << trackPath << " " << mediaFromString(trackPath).canonicalUrl();
         mediaPlayer_->playlist()->addMedia(mediaFromString(trackPath));
     }
     playlist.endGroup();
@@ -168,11 +217,35 @@ QString MainWindow::getFileContents(QString fileName) {
 void MainWindow::onOpen() {
     //Show file open dialog
     openFile(QFileDialog::getOpenFileName(this, tr("Abrir archivo"), "",
-                                          tr("Archivos de sonido (*.mp3 *.wav *.ogg);;Listas de reproducción (*.m3u *.pls)")));
+                                          tr("Archivos de sonido (*.mp3 *.wav *.ogg);;"
+                                             "Archivos de vídeo (*.avi *.mp4 *.mkv);;"
+                                             "Listas de reproducción (*.m3u *.pls)")));
 }
 
 void MainWindow::onSeek() {
     mediaPlayer_->setPosition(playerSlider_->sliderPosition());
+}
+
+void MainWindow::onRepeatChange(bool checked) {
+    QMediaPlaylist* playlist = mediaPlayer_->playlist();
+
+    if (!btnRandom_->isChecked()) {
+        if (checked)
+            playlist->setPlaybackMode(QMediaPlaylist::Loop);
+        else
+            playlist->setPlaybackMode(QMediaPlaylist::Sequential);
+    }
+}
+
+void MainWindow::onRandomChange(bool checked) {
+    QMediaPlaylist* playlist = mediaPlayer_->playlist();
+
+    if (checked)
+        playlist->setPlaybackMode(QMediaPlaylist::Random);
+    else if (btnRepeat_->isChecked())
+        playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    else
+        playlist->setPlaybackMode(QMediaPlaylist::Sequential);
 }
 
 void MainWindow::onDurationChanged(qint64 duration) {

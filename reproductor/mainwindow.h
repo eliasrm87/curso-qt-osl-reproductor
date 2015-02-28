@@ -22,8 +22,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
+    static const unsigned MAX_RECENT_FILES_LENGTH = 10;
+
     QGridLayout*        lytMain_;
     QWidget*            wgtMain_;
     QMediaPlayer*       mediaPlayer_;
@@ -34,6 +39,8 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+    QToolButton*        btnRepeat_;
+    QToolButton*        btnRandom_;
     QWidget*            aboutWindow;
 
     QMenuBar*           mainMenu_;
@@ -47,16 +54,22 @@ private:
     QMenu*              helpMenu_;
       QAction*            aboutAct_;
 
+    void readRecentFileList();
+    void writeRecentFileList();
     void addRecentFile(QString fileName);
+
     void openFile(QString fileName);
     void openM3UPlaylist(QString fileName);
     void openPLSPlaylist(QString fileName);
+
     QString getFileContents(QString fileName);
     QMediaContent mediaFromString(QString fileNameOrURL);
 
 private slots:
     void onOpen();
     void onSeek();
+    void onRepeatChange(bool checked);
+    void onRandomChange(bool checked);
     void onDurationChanged(qint64 duration);
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
@@ -64,6 +77,7 @@ private slots:
     void onFullScreen();
     void onMetadataTriggered();
     void onAboutTriggered();
+
 };
 
 #endif // MAINWINDOW_H
