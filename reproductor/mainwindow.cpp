@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <QList>
+#include <QLabel>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -137,13 +139,51 @@ void MainWindow::onOpenRecent(QAction* act) {
 }
 
 void MainWindow::onFullScreen() {
-
+    videoWidget_->setFullScreen(!videoWidget_->isFullScreen());
 }
 
 void MainWindow::onMetadataTriggered() {
+    QStringList metadataProperties = mediaPlayer_->availableMetaData();
 
+    if (metadataProperties.empty()) {
+        QMessageBox::information(this, tr("No hay metadatos"),
+                                 tr("No hay metadatos disponibles en el fichero actual"));
+        return;
+    }
+
+    QStringList metadata;
+    for (QStringList::iterator str = metadataProperties.begin(); str != metadataProperties.end(); ++str) {
+        QVariant data = mediaPlayer_->metaData(*str);
+        metadata.append(*str + ": " + data.toString());
+    }
+
+    QLayout* metadataLayout = new QGridLayout(this);
+    QDialog* metadataDialog = new QDialog(this);
+    QLabel* dialogText = new QLabel(metadata.join("\n"), this);
+
+    metadataLayout->addWidget(dialogText);
+    metadataDialog->setLayout(metadataLayout);
+    metadataDialog->setWindowTitle(tr("Metadatos"));
+
+    metadataDialog->setModal(true);
+    metadataDialog->setVisible(true);
+    metadataDialog->exec();
 }
 
 void MainWindow::onAboutTriggered() {
+    QGridLayout* metadataLayout = new QGridLayout(this);
+    QDialog* metadataDialog = new QDialog(this);
 
+    QLabel* image = new QLabel(this);
+    image->setPixmap(QPixmap(":/images/resources/qt.jpg"));
+    QLabel* dialogText = new QLabel(tr("Hecho por Sergio Afonso"), this);
+
+    metadataLayout->addWidget(image, 0, 0, 1, 1);
+    metadataLayout->addWidget(dialogText, 0, 1, 1, 1);
+    metadataDialog->setLayout(metadataLayout);
+    metadataDialog->setWindowTitle(tr("Metadatos"));
+
+    metadataDialog->setModal(true);
+    metadataDialog->setVisible(true);
+    metadataDialog->exec();
 }

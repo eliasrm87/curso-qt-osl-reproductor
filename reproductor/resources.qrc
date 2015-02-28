@@ -5,4 +5,7 @@
         <file>resources/play.png</file>
         <file>resources/stop.png</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>resources/qt.jpg</file>
+    </qresource>
 </RCC>
