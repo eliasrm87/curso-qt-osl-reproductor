@@ -19,4 +19,4 @@ HEADERS  += mainwindow.h
 RESOURCES += \
     resources.qrc
 
-
+CONFIG +=c++11
