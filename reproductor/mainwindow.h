@@ -13,6 +13,8 @@
 #include <QLabel>
 #include <QMediaPlaylist>
 #include <QListWidget>
+#include <QMouseEvent>
+#include <QEvent>
 #include <QMenu>
 #include <QAction>
 #include <QMenuBar>
@@ -29,7 +31,6 @@ public:
 private:
 
     //Variable que revisa si estamos en pantalla completa
-    QFile*              fich_recent;
 
     QGridLayout*        lytMain_;
     QWidget*            wgtMain_;
@@ -37,33 +38,33 @@ private:
     QSlider*            playerSlider_;
     QVideoWidget*       videoWidget_;
     QSlider*            volumeSlider_;
-    QToolButton*        btnOpen_;
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
-
-    QString             file_name;
     QLabel*             label_name;
-    QListWidget*        play_list;
-
 
     //Menu
     QMenuBar*           mnBar_;
     QMenu*              mainMenu_;
     QAction*            actAbrir_;
-    QAction*            actRecientes_;
-    QAction*            live_stream;
-    QDialog*            live_diag;
-    QGridLayout*        ly_livestream;
-    QLabel             live_lb;
-    QLineEdit          live_lnedit;
-
+    QMenu*              mnuRecientes_;
+    // Acciones de Archivo
+    QAction *actArchivoAbrir_;
+    QAction *actArchivoBorrarRecientes_;
 
     QMenu*              mnAyuda_;
     QAction*            actAyuda_;
     QMenu*              mnVer_;
     QAction*            actFullscreen_;
     QAction*            actMetadatos_;
+
+    //LiveStream
+    QAction*            actLiveStream_;
+    QDialog*            diag_LiveStream_;
+    QGridLayout*        lyLiveStream_;
+    QLabel*             lbLiveStream_;
+    QLineEdit*          lndtLiveStream_;
+
 
     //Acerca de
     QDialog*            dialog_acer;
@@ -72,29 +73,37 @@ private:
     QGridLayout*        layout_acer;
 
 
-//    //Menu de propiedades
-//    QMenu*              mnprop_;
-//    QAction*            actConfig_;
-//    QDialog*            diag_prop_;
-//    QGridLayout*        lyprop_;
-//    QLabel*             lbbrigth_;
-//    QSlider*            slibright_;
-//    QLabel*             lbbsatur_;
-//    QSlider*            slisatur_;
-//    QLabel*             lbcontrst_;
-//    QSlider*            slcontrst_;
+    //Menu de propiedades
+    QMenu*              mnprop_;
+    QAction*            actConfig_;
+    QDialog*            diag_prop_;
+    QGridLayout*        lyprop_;
+    QLabel*             lbbrigth_;
+    QSlider*            slibright_;
+    QLabel*             lbbsatur_;
+    QSlider*            slisatur_;
+    QLabel*             lbcontrst_;
+    QSlider*            slcontrst_;
 
 
-
+    //Lista de Reproduccion
+    QMediaPlaylist*    play_list;
+    QMenu*             mnPlay_list;
+    QAction*           addplaylist_;
+    QAction*           removeplaylist_;
+    QAction*           rdn_play; //Reproduccion Aleatoria
+    QAction*           loop_play; //Reproduccion en bucle
+    QAction*           btnNext_;
+    QAction*           btnAfter_;
+    QAction*           showPlaylist_;
 private slots:
 
-//    void onBrightChanged(qint64);
-//    void onSaturationChanged(qint64);
-//    void onContrastChanged(qint64);
-//    void onPropiedades();
+    void onFullScreen();
     void onLive();
-    void onRecent();
-    void onSelect();
+    void onBrightChanged(qint64);
+    void onSaturationChanged(qint64);
+    void onContrastChanged(qint64);
+    void onPropiedades();
     void onOpen();
     void onSeek();
     void onDurationChanged(qint64 duration);
@@ -102,9 +111,27 @@ private slots:
     void onVolumeChanged(int volume);
     void onHelp();
 
-protected:
-    //void keyPressEvent(QKeyEvent *event);
+    //Funciones para archivos recientes
+    void onRecent();
+    void addRecent(QString);
+    void opRecent();
+    void remRecent();
 
+    //Funcion para controlar la pantalla completa
+    bool eventFilter(QObject*, QEvent*);
+
+
+    //SLOTS PARA LA GESTION DE LA LISTA DE REPRODUCCION
+    void onShowPlaylist();
+    void start_playlist();
+    void addToPlaylist(QString);
+    void removeFromPlaylist();
+    void onRandom();
+    void onLoop();
+    void onAdd();
+    void onRemove();
+    void onNext();
+    void onAfter();
 };
 
 #endif // MAINWINDOW_H

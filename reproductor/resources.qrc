@@ -5,5 +5,7 @@
         <file>resources/play.png</file>
         <file>resources/stop.png</file>
         <file>resources/winamp-logo-4.png</file>
+        <file>resources/after.png</file>
+        <file>resources/next.png</file>
     </qresource>
 </RCC>

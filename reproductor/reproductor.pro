@@ -7,7 +7,7 @@
 QT       += core network xml multimedia multimediawidgets widgets
 
 
-TARGET = reproductor-exe
+TARGET = Reproductor Multimedia Qt
 TEMPLATE = app
 
 
