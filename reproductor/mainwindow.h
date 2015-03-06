@@ -48,6 +48,8 @@ private:
       QAction*            openAct_;
       QMenu*              recentMenu_;
       QActionGroup*       recentFiles_;
+    QMenu*              editMenu_;
+      QAction*            imageAct_;
     QMenu*              viewMenu_;
       QAction*            fullscreenAct_;
       QAction*            metadataAct_;
@@ -77,6 +79,7 @@ private slots:
     void onFullScreen();
     void onMetadataTriggered();
     void onAboutTriggered();
+    void onImageTriggered();
 
 };
 

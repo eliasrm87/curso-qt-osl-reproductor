@@ -15,26 +15,31 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     setCentralWidget(wgtMain_);
 
     //Create menus and actions
-    mainMenu_ = new QMenuBar(this);
-    fileMenu_ = new QMenu(tr("&Archivo"), this);
+    mainMenu_   = new QMenuBar(this);
+    fileMenu_   = new QMenu(tr("&Archivo"), this);
+    editMenu_   = new QMenu(tr("&Edición"), this);
     recentMenu_ = new QMenu(tr("Archivos recientes"), this);
-
-    viewMenu_ = new QMenu(tr("&Ver"), this);
-    helpMenu_ = new QMenu(tr("&Ayuda"), this);
+    viewMenu_   = new QMenu(tr("&Ver"), this);
+    helpMenu_   = new QMenu(tr("&Ayuda"), this);
 
     setMenuBar(mainMenu_);
     mainMenu_->addMenu(fileMenu_);
+    mainMenu_->addMenu(editMenu_);
     mainMenu_->addMenu(viewMenu_);
     mainMenu_->addMenu(helpMenu_);
 
-    openAct_ = new QAction(tr("&Abrir..."), this);
-    recentFiles_ = new QActionGroup(this);
+    openAct_       = new QAction(tr("&Abrir..."), this);
+    recentFiles_   = new QActionGroup(this);
+    imageAct_      = new QAction(tr("&Imagen..."), this);
     fullscreenAct_ = new QAction(tr("&Pantalla completa"), this);
-    metadataAct_ = new QAction(tr("&Metadatos..."), this);
-    aboutAct_ = new QAction(tr("&Acerca de..."), this);
+    metadataAct_   = new QAction(tr("&Metadatos..."), this);
+    aboutAct_      = new QAction(tr("&Acerca de..."), this);
+
+    fullscreenAct_->setShortcut(Qt::Key_F11);
 
     fileMenu_->addAction(openAct_);
     fileMenu_->addMenu(recentMenu_);
+    editMenu_->addAction(imageAct_);
     viewMenu_->addAction(fullscreenAct_);
     viewMenu_->addAction(metadataAct_);
     helpMenu_->addAction(aboutAct_);
@@ -88,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     // Actions connections
     connect(openAct_,       SIGNAL(triggered()),         this, SLOT(onOpen()));
+    connect(imageAct_,      SIGNAL(triggered()),         this, SLOT(onImageTriggered()));
     connect(recentFiles_,   SIGNAL(triggered(QAction*)), this, SLOT(onOpenRecent(QAction*)));
     connect(fullscreenAct_, SIGNAL(triggered()),         this, SLOT(onFullScreen()));
     connect(metadataAct_,   SIGNAL(triggered()),         this, SLOT(onMetadataTriggered()));
@@ -266,6 +272,15 @@ void MainWindow::onOpenRecent(QAction* act) {
 
 void MainWindow::onFullScreen() {
     videoWidget_->setFullScreen(!videoWidget_->isFullScreen());
+
+    if (videoWidget_->isFullScreen()) {
+      videoWidget_->addAction(fullscreenAct_);
+      fullscreenAct_->setShortcut(Qt::Key_Escape);
+    }
+    else {
+      videoWidget_->removeAction(fullscreenAct_);
+      fullscreenAct_->setShortcut(Qt::Key_F11);
+    }
 }
 
 void MainWindow::onMetadataTriggered() {
@@ -297,8 +312,8 @@ void MainWindow::onMetadataTriggered() {
 }
 
 void MainWindow::onAboutTriggered() {
-    QGridLayout* metadataLayout = new QGridLayout(this);
     QDialog* metadataDialog = new QDialog(this);
+    QGridLayout* metadataLayout = new QGridLayout(metadataDialog);
 
     QLabel* image = new QLabel(this);
     image->setPixmap(QPixmap(":/images/resources/qt.jpg"));
@@ -312,4 +327,31 @@ void MainWindow::onAboutTriggered() {
     metadataDialog->setModal(true);
     metadataDialog->setVisible(true);
     metadataDialog->exec();
+}
+
+void MainWindow::onImageTriggered() {
+    QDialog* dialog = new QDialog(this);
+    QGridLayout* layout = new QGridLayout(dialog);
+
+    QLabel* brightness = new QLabel(tr("Brillo:"), this);
+    QLabel* contrast   = new QLabel(tr("Contraste:"), this);
+    QLabel* saturation = new QLabel(tr("Saturación:"), this);
+
+    QSlider* brightnessSlider = new QSlider(Qt::Horizontal, this);
+    QSlider* contrastSlider   = new QSlider(Qt::Horizontal, this);
+    QSlider* saturationSlider = new QSlider(Qt::Horizontal, this);
+
+    layout->addWidget(brightness,       0, 0, 1, 1);
+    layout->addWidget(brightnessSlider, 0, 1, 1, 1);
+    layout->addWidget(contrast,         1, 0, 1, 1);
+    layout->addWidget(contrastSlider,   1, 1, 1, 1);
+    layout->addWidget(saturation,       2, 0, 1, 1);
+    layout->addWidget(saturationSlider, 2, 1, 1, 1);
+
+    dialog->setLayout(layout);
+    dialog->setWindowTitle(tr("Metadatos"));
+
+    dialog->setModal(true);
+    dialog->setVisible(true);
+    dialog->exec();
 }
