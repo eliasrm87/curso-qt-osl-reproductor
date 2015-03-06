@@ -7,6 +7,7 @@
 #include <QTextStream>
 #include <QCloseEvent>
 #include <QPushButton>
+#include <QApplication>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     //Create central widget and set main layout
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     recentMenu_ = new QMenu(tr("Archivos recientes"), this);
     viewMenu_   = new QMenu(tr("&Ver"), this);
     helpMenu_   = new QMenu(tr("&Ayuda"), this);
+    trayMenu_   = new QMenu(tr("Tray"), this);
 
     setMenuBar(mainMenu_);
     mainMenu_->addMenu(fileMenu_);
@@ -35,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     fullscreenAct_ = new QAction(tr("&Pantalla completa"), this);
     metadataAct_   = new QAction(tr("&Metadatos..."), this);
     aboutAct_      = new QAction(tr("&Acerca de..."), this);
+    minimizeAct_   = new QAction(tr("Mi&nimizar"), this);
+    maximizeAct_   = new QAction(tr("Ma&ximizar"), this);
+    restoreAct_    = new QAction(tr("&Restablecer"), this);
+    quitAct_       = new QAction(tr("&Salir"), this);
 
     fullscreenAct_->setShortcut(Qt::Key_F11);
 
@@ -44,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     viewMenu_->addAction(fullscreenAct_);
     viewMenu_->addAction(metadataAct_);
     helpMenu_->addAction(aboutAct_);
+    trayMenu_->addAction(minimizeAct_);
+    trayMenu_->addAction(maximizeAct_);
+    trayMenu_->addAction(restoreAct_);
+    trayMenu_->addSeparator();
+    trayMenu_->addAction(quitAct_);
 
     readRecentFileList();
 
@@ -58,11 +69,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     btnStop_      = new QToolButton(this);
     btnRepeat_    = new QToolButton(this);
     btnRandom_    = new QToolButton(this);
+    trayIcon_     = new QSystemTrayIcon(QIcon(QPixmap(":/icons/resources/play.png")), this);
 
     QMediaPlaylist* playlist = new QMediaPlaylist(this);
     playlist->setPlaybackMode(QMediaPlaylist::Sequential);
 
-    //Setup widwgets
+    //Setup widgets
     videoWidget_->setMinimumSize(400, 400);
     mediaPlayer_->setPlaylist(playlist);
     mediaPlayer_->setVideoOutput(videoWidget_);
@@ -72,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     volumeSlider_->setSliderPosition(100);
     btnRepeat_->setCheckable(true);
     btnRandom_->setCheckable(true);
+    trayIcon_->setContextMenu(trayMenu_);
+    trayIcon_->setVisible(true);
 
     //Populate grid layout
     lytMain_->addWidget(videoWidget_,  0, 0, 1, 7);
@@ -100,6 +114,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(metadataAct_,   SIGNAL(triggered()),         this, SLOT(onMetadataTriggered()));
     connect(aboutAct_,      SIGNAL(triggered()),         this, SLOT(onAboutTriggered()));
 
+    connect(minimizeAct_,   SIGNAL(triggered()),         this, SLOT(hide()));
+    connect(maximizeAct_,   SIGNAL(triggered()),         this, SLOT(showMaximized()));
+    connect(restoreAct_,    SIGNAL(triggered()),         this, SLOT(showNormal()));
+    connect(quitAct_,       SIGNAL(triggered()),         qApp, SLOT(quit()));
+
     //Connections
     connect(btnOpen_,      SIGNAL(pressed()),               this,         SLOT(onOpen()));
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
@@ -120,7 +139,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     writeRecentFileList();
-    event->accept();
+
+    if (trayIcon_->isVisible()) {
+        hide();
+        event->ignore();
+    }
 }
 
 void MainWindow::readRecentFileList() {
@@ -313,21 +336,21 @@ void MainWindow::onMetadataTriggered() {
 }
 
 void MainWindow::onAboutTriggered() {
-    QDialog* metadataDialog = new QDialog(this);
-    QGridLayout* metadataLayout = new QGridLayout(metadataDialog);
+    QDialog dialog;
+    QGridLayout* layout = new QGridLayout(&dialog);
 
-    QLabel* image = new QLabel(this);
+    QLabel* image = new QLabel(&dialog);
     image->setPixmap(QPixmap(":/images/resources/qt.jpg"));
-    QLabel* dialogText = new QLabel(tr("Hecho por Sergio Afonso"), this);
+    QLabel* dialogText = new QLabel(tr("Hecho por Sergio Afonso"), &dialog);
 
-    metadataLayout->addWidget(image, 0, 0, 1, 1);
-    metadataLayout->addWidget(dialogText, 0, 1, 1, 1);
-    metadataDialog->setLayout(metadataLayout);
-    metadataDialog->setWindowTitle(tr("Metadatos"));
+    layout->addWidget(image, 0, 0, 1, 1);
+    layout->addWidget(dialogText, 0, 1, 1, 1);
+    dialog.setLayout(layout);
+    dialog.setWindowTitle(tr("Acerca de"));
 
-    metadataDialog->setModal(true);
-    metadataDialog->setVisible(true);
-    metadataDialog->exec();
+    dialog.setModal(true);
+    dialog.setVisible(true);
+    dialog.exec();
 }
 
 void MainWindow::onImageTriggered() {

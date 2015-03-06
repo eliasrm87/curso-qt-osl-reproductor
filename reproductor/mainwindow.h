@@ -14,6 +14,7 @@
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
+#include <QSystemTrayIcon>
 
 class MainWindow : public QMainWindow
 {
@@ -41,7 +42,7 @@ private:
     QToolButton*        btnStop_;
     QToolButton*        btnRepeat_;
     QToolButton*        btnRandom_;
-    QWidget*            aboutWindow;
+    QSystemTrayIcon*    trayIcon_;
 
     QMenuBar*           mainMenu_;
     QMenu*              fileMenu_;
@@ -55,6 +56,11 @@ private:
       QAction*            metadataAct_;
     QMenu*              helpMenu_;
       QAction*            aboutAct_;
+    QMenu*              trayMenu_;
+      QAction*            minimizeAct_;
+      QAction*            maximizeAct_;
+      QAction*            restoreAct_;
+      QAction*            quitAct_;
 
     void readRecentFileList();
     void writeRecentFileList();
