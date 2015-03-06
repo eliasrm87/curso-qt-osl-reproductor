@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QTextStream>
 #include <QCloseEvent>
+#include <QPushButton>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     //Create central widget and set main layout
@@ -330,28 +331,49 @@ void MainWindow::onAboutTriggered() {
 }
 
 void MainWindow::onImageTriggered() {
-    QDialog* dialog = new QDialog(this);
-    QGridLayout* layout = new QGridLayout(dialog);
+    QDialog dialog;
+    QGridLayout* layout = new QGridLayout(&dialog);
 
-    QLabel* brightness = new QLabel(tr("Brillo:"), this);
-    QLabel* contrast   = new QLabel(tr("Contraste:"), this);
-    QLabel* saturation = new QLabel(tr("Saturación:"), this);
+    QLabel* brightness = new QLabel(tr("Brillo:"), &dialog);
+    QLabel* contrast   = new QLabel(tr("Contraste:"), &dialog);
+    QLabel* saturation = new QLabel(tr("Saturación:"), &dialog);
 
-    QSlider* brightnessSlider = new QSlider(Qt::Horizontal, this);
-    QSlider* contrastSlider   = new QSlider(Qt::Horizontal, this);
-    QSlider* saturationSlider = new QSlider(Qt::Horizontal, this);
+    QSlider* brightnessSlider = new QSlider(Qt::Horizontal, &dialog);
+    QSlider* contrastSlider   = new QSlider(Qt::Horizontal, &dialog);
+    QSlider* saturationSlider = new QSlider(Qt::Horizontal, &dialog);
+
+    brightnessSlider->setRange(-100, 100);
+    contrastSlider->setRange(-100, 100);
+    saturationSlider->setRange(-100, 100);
+
+    brightnessSlider->setValue(videoWidget_->brightness());
+    contrastSlider->setValue(videoWidget_->contrast());
+    saturationSlider->setValue(videoWidget_->saturation());
+
+    QFrame* separator = new QFrame(&dialog);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+
+    QPushButton* okButton = new QPushButton(tr("Aceptar"), &dialog);
 
     layout->addWidget(brightness,       0, 0, 1, 1);
-    layout->addWidget(brightnessSlider, 0, 1, 1, 1);
+    layout->addWidget(brightnessSlider, 0, 1, 1, 2);
     layout->addWidget(contrast,         1, 0, 1, 1);
-    layout->addWidget(contrastSlider,   1, 1, 1, 1);
+    layout->addWidget(contrastSlider,   1, 1, 1, 2);
     layout->addWidget(saturation,       2, 0, 1, 1);
-    layout->addWidget(saturationSlider, 2, 1, 1, 1);
+    layout->addWidget(saturationSlider, 2, 1, 1, 2);
+    layout->addWidget(separator,        3, 0, 1, 3);
+    layout->addWidget(okButton,         4, 2, 1, 1);
 
-    dialog->setLayout(layout);
-    dialog->setWindowTitle(tr("Metadatos"));
+    dialog.setLayout(layout);
+    dialog.setWindowTitle(tr("Metadatos"));
 
-    dialog->setModal(true);
-    dialog->setVisible(true);
-    dialog->exec();
+    connect(brightnessSlider, SIGNAL(sliderMoved(int)), videoWidget_, SLOT(setBrightness(int)));
+    connect(contrastSlider,   SIGNAL(sliderMoved(int)), videoWidget_, SLOT(setContrast(int)));
+    connect(saturationSlider, SIGNAL(sliderMoved(int)), videoWidget_, SLOT(setSaturation(int)));
+    connect(okButton,         SIGNAL(clicked()),        &dialog,      SLOT(close()));
+
+    dialog.setModal(true);
+    dialog.setVisible(true);
+    dialog.exec();
 }
