@@ -320,16 +320,18 @@ void MainWindow::onMetadataTriggered() {
     QStringList metadata;
     for (QStringList::iterator str = metadataProperties.begin(); str != metadataProperties.end(); ++str) {
         QVariant data = mediaPlayer_->metaData(*str);
-        metadata.append(*str + ": " + data.toString());
+        metadata.append("<b>" + *str + "</b>: " + data.toString());
     }
 
     QDialog dialog;
     QLayout* layout = new QGridLayout(&dialog);
-    QLabel* dialogText = new QLabel(metadata.join("\n"), this);
+    QLabel* dialogText = new QLabel(metadata.join("<br/>"), this);
 
     layout->addWidget(dialogText);
     dialog.setLayout(layout);
     dialog.setWindowTitle(tr("Metadatos"));
+
+    dialog.setMinimumWidth(200);
 
     dialog.setModal(true);
     dialog.setVisible(true);
