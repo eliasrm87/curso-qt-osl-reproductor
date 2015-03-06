@@ -201,6 +201,7 @@ void MainWindow::openFile(QString fileName) {
             mediaPlayer_->playlist()->addMedia(mediaFromString(fileName));
 
         addRecentFile(fileName);
+        mediaPlayer_->playlist()->setCurrentIndex(1);
     }
 }
 
@@ -322,17 +323,17 @@ void MainWindow::onMetadataTriggered() {
         metadata.append(*str + ": " + data.toString());
     }
 
-    QLayout* metadataLayout = new QGridLayout(this);
-    QDialog* metadataDialog = new QDialog(this);
+    QDialog dialog;
+    QLayout* layout = new QGridLayout(&dialog);
     QLabel* dialogText = new QLabel(metadata.join("\n"), this);
 
-    metadataLayout->addWidget(dialogText);
-    metadataDialog->setLayout(metadataLayout);
-    metadataDialog->setWindowTitle(tr("Metadatos"));
+    layout->addWidget(dialogText);
+    dialog.setLayout(layout);
+    dialog.setWindowTitle(tr("Metadatos"));
 
-    metadataDialog->setModal(true);
-    metadataDialog->setVisible(true);
-    metadataDialog->exec();
+    dialog.setModal(true);
+    dialog.setVisible(true);
+    dialog.exec();
 }
 
 void MainWindow::onAboutTriggered() {
