@@ -15,6 +15,11 @@
 #include <QToolButton>
 #include <QMediaMetaData>
 #include <QTextEdit>
+#include <QMediaPlaylist>
+#include <QListWidget>
+#include <QInputDialog>
+
+const QString nombre = "recientes.txt";
 
 class MainWindow : public QMainWindow
 {
@@ -44,6 +49,7 @@ private:
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
     QAction*            actArchivoAbrir_;
+    QAction*            actArchivoLista_;
     QAction*            actArchivoSalir_;
     QAction*            actArchivoStream_;
     QAction*            actArchivoRecientes_;
@@ -52,6 +58,10 @@ private:
     QAction*            actAyudaAcercade_;
     QTextEdit*          txtEditor_;
     QPushButton*        botonOk_;
+    QMediaPlaylist*     playlist_;
+    QListWidget*        lista_recientes_;
+    QInputDialog*       inputDialog_;
+    QMediaContent       lista_;
 
 private slots:
     void onOpen();
@@ -60,6 +70,10 @@ private slots:
     void onPositionChanged(qint64 position);
     void onVolumeChanged(int volume);
     void onStream();
+    void onRecientes();
+    void Cargar_lista_reproduccion();
+    void Recientes_crear(QString nombreArchivo);
+    void Play_recientes(QListWidgetItem *);
     void onFullscreen();
     void onMetadatos();
     void onAcercade();

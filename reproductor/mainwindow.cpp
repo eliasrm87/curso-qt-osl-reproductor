@@ -20,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     actArchivoAbrir_->setIcon(QIcon(":/icons/resources/play.png"));
     mnuArchivo_->addAction(actArchivoAbrir_);
 
+    actArchivoLista_ = new QAction(tr("&Abrir Lista"), this);
+    actArchivoLista_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    actArchivoLista_->setIcon(QIcon(":/icons/resources/play.png"));
+    mnuArchivo_->addAction(actArchivoLista_);
+
     actArchivoStream_ = new QAction(tr("&Stream"), this);
     actArchivoStream_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     actArchivoStream_->setIcon(QIcon(":/icons/resources/play.png"));
@@ -28,6 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
     actArchivoRecientes_ = new QAction(tr("&Recientes"), this);
     actArchivoRecientes_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     mnuArchivo_->addAction(actArchivoRecientes_);
+
+    lista_recientes_ = new QListWidget();
+    playlist_ = new QMediaPlaylist();
 
     actArchivoSalir_ = new QAction(tr("&Salir"), this);
     actArchivoSalir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -88,8 +96,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Connections
     connect(actArchivoAbrir_,   SIGNAL(triggered()),        this,         SLOT(onOpen()));
+    connect(actArchivoLista_,   SIGNAL(triggered()),        this,         SLOT(Cargar_lista_reproduccion()));
     connect(actArchivoSalir_,   SIGNAL(triggered()),        this,         SLOT(close()));
-    connect(actArchivoStream_,   SIGNAL(triggered()),       this,         SLOT(onStream()));
+    connect(actArchivoStream_,  SIGNAL(triggered()),        this,         SLOT(onStream()));
+    connect(actArchivoRecientes_,SIGNAL(triggered()),       this,         SLOT(onRecientes()));
     connect(actVerFullScreen_,  SIGNAL(triggered()),        this,         SLOT(onFullscreen()));
     connect(actVerMetadatos_,   SIGNAL(triggered()),        this,         SLOT(onMetadatos()));
     connect(actAyudaAcercade_,  SIGNAL(triggered()),        this,         SLOT(onAcercade()));
@@ -116,29 +126,97 @@ void MainWindow::onOpen()
     if (fileName != "") {
         mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
 //        fileName.section("/",-1);
+        mediaPlayer_->play();
+
+        playlist_->addMedia(QUrl::fromLocalFile(fileName));
+
+        Recientes_crear(fileName);
+
     }
 }
 
-void MainWindow::onStream()
+//Recientes
+void MainWindow::Recientes_crear(QString nombreArchivo){
+
+    QFile archivo;
+    archivo.setFileName(nombre);
+    if (archivo.open(QFile::WriteOnly | QFile::Append)) {
+        archivo.write(nombreArchivo.toUtf8());
+        archivo.write("\n");
+        //Se cierra el fichero
+        archivo.close();
+        }
+}
+
+
+void MainWindow::Cargar_lista_reproduccion()
 {
-    QDialog *dialog = new QDialog;
-    QLabel *texto_ = new QLabel;
-    txtEditor_ = new QTextEdit(this);
-//    QPushButton botonOk_ = new QPushButton(tr("OK"));
-    wgtAcercade_ = new QWidget(this);
-    lytAcercade_ = new QGridLayout(wgtAcercade_);
 
-    dialog->setWindowTitle("Stream");
-    dialog->setLayout(lytAcercade_);
-    texto_->setText("Enlace del Stream:");
-    lytAcercade_->addWidget(texto_, 0, 0);
-    lytAcercade_->addWidget(txtEditor_, 0, 1);
-//    lytAcercade_->addWidget(botonOk_, 1, 0);
-    dialog->show();
-    dialog->resize(600, 0);
+    inputDialog_ = new QInputDialog();
+    bool ok;
+    inputDialog_->setOptions(QInputDialog::NoButtons);
 
+    QString dir = "http://";
+
+    QString text = inputDialog_->getText(NULL, "Listas de Rerprodución M3U y/o PLS",
+                                         "Introduzca la dirección:",
+                                         QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+
+    if (ok && !text.isEmpty()){
+
+        lista_ = QMediaContent(QUrl(dir+text));
+
+        playlist_->addMedia(lista_);
+        mediaPlayer_->setPlaylist(playlist_);
+        mediaPlayer_->play();
+    }
+}
+
+
+void MainWindow::onStream()//Echarle un vistazo
+{
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Stream"),tr("Direccion:"), QLineEdit::Normal,"", &ok);
+    if (ok){
+       //mediaPlayer_->setMedia(QUrl("http://vpr.streamguys.net/vpr64.mp3"));
+        mediaPlayer_->setMedia(QUrl(text));
+    }
 
 }
+
+void MainWindow::onRecientes()
+{
+    lista_recientes_->clear();
+    lista_recientes_->setVisible(true);
+
+    QFile archivo(nombre);
+
+    if (archivo.open(QFile::ReadOnly | QIODevice::Text)) {
+
+        QTextStream in(&archivo);
+
+        while (!in.atEnd()) {
+            QString Line = in.readLine();
+
+            lista_recientes_->addItem(new QListWidgetItem(Line));
+
+            connect(lista_recientes_, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(Play_recientes(QListWidgetItem *)));
+
+        }
+
+        archivo.close();
+    }
+
+}
+
+void MainWindow::Play_recientes(QListWidgetItem *item){
+
+    mediaPlayer_->setMedia(QUrl::fromLocalFile(item->text()));
+    mediaPlayer_->play();
+
+}
+
 
 void MainWindow::onSeek()
 {
