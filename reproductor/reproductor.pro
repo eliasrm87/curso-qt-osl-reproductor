@@ -7,7 +7,7 @@
 QT       += core network xml multimedia multimediawidgets widgets
 
 
-TARGET = reproductor-exe
+TARGET = Reproductor Multimedia Qt
 TEMPLATE = app
 
 
@@ -19,4 +19,4 @@ HEADERS  += mainwindow.h
 RESOURCES += \
     resources.qrc
 
-
+CONFIG +=c++11
