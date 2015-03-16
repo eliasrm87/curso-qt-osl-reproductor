@@ -508,6 +508,9 @@ qrc_resources.cpp: ../reproductor/resources.qrc \
 		../reproductor/resources/eject.png \
 		../reproductor/resources/stop.png \
 		../reproductor/resources/play.png \
+		../reproductor/resources/player.png \
+		../reproductor/resources/repeat.png \
+		../reproductor/resources/shuffle.png \
 		../reproductor/resources/pause.png
 	/home/joram/Qt/5.4/gcc_64/bin/rcc -name resources ../reproductor/resources.qrc -o qrc_resources.cpp
 
@@ -675,6 +678,29 @@ moc_mainwindow.cpp: ../../../Qt/5.4/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextcursor.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qpen.h \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/QMediaPlaylist \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/qmediaplaylist.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QListWidget \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistwidget.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistview.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt/5.4/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyle.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qtabbar.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QInputDialog \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QMessageBox \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qmessagebox.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QSystemTrayIcon \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qsystemtrayicon.h \
 		../reproductor/mainwindow.h
 	/home/joram/Qt/5.4/gcc_64/bin/moc $(DEFINES) -I/home/joram/Qt/5.4/gcc_64/mkspecs/linux-g++ -I/home/joram/workspace/curso-qt-osl-reproductor/reproductor -I/home/joram/Qt/5.4/gcc_64/include -I/home/joram/Qt/5.4/gcc_64/include/QtMultimediaWidgets -I/home/joram/Qt/5.4/gcc_64/include/QtMultimedia -I/home/joram/Qt/5.4/gcc_64/include/QtWidgets -I/home/joram/Qt/5.4/gcc_64/include/QtGui -I/home/joram/Qt/5.4/gcc_64/include/QtNetwork -I/home/joram/Qt/5.4/gcc_64/include/QtXml -I/home/joram/Qt/5.4/gcc_64/include/QtCore -I. ../reproductor/mainwindow.h -o moc_mainwindow.cpp
 
@@ -854,6 +880,29 @@ main.o: ../reproductor/main.cpp ../reproductor/mainwindow.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextcursor.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qpen.h \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/QMediaPlaylist \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/qmediaplaylist.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QListWidget \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistwidget.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistview.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt/5.4/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyle.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qtabbar.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QInputDialog \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QMessageBox \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qmessagebox.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QSystemTrayIcon \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qsystemtrayicon.h \
 		../../../Qt/5.4/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt/5.4/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt/5.4/gcc_64/include/QtCore/qcoreapplication.h \
@@ -1026,7 +1075,30 @@ mainwindow.o: ../reproductor/mainwindow.cpp ../reproductor/mainwindow.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextcursor.h \
 		../../../Qt/5.4/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt/5.4/gcc_64/include/QtGui/qpen.h
+		../../../Qt/5.4/gcc_64/include/QtGui/qpen.h \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/QMediaPlaylist \
+		../../../Qt/5.4/gcc_64/include/QtMultimedia/qmediaplaylist.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QListWidget \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistwidget.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlistview.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt/5.4/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt/5.4/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qstyle.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qtabbar.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QInputDialog \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QMessageBox \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qmessagebox.h \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/QSystemTrayIcon \
+		../../../Qt/5.4/gcc_64/include/QtWidgets/qsystemtrayicon.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../reproductor/mainwindow.cpp
 
 qrc_resources.o: qrc_resources.cpp 

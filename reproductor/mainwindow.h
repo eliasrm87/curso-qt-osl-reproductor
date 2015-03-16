@@ -18,6 +18,8 @@
 #include <QMediaPlaylist>
 #include <QListWidget>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSystemTrayIcon>
 
 const QString nombre = "recientes.txt";
 
@@ -33,6 +35,7 @@ private:
     QMenuBar*           mainMenu_;
     QMenu*              mnuArchivo_;
     QMenu*              mnuVer_;
+    QMenu*              mnuEditar_;
     QMenu*              mnuAyuda_;
     QGridLayout*        lytMain_;
     QWidget*            wgtMain_;
@@ -48,6 +51,8 @@ private:
     QToolButton*        btnPlay_;
     QToolButton*        btnPause_;
     QToolButton*        btnStop_;
+    QToolButton*        btnRepeat_;
+    QToolButton*        btnShuffle_;
     QAction*            actArchivoAbrir_;
     QAction*            actArchivoLista_;
     QAction*            actArchivoSalir_;
@@ -55,6 +60,8 @@ private:
     QAction*            actArchivoRecientes_;
     QAction*            actVerFullScreen_;
     QAction*            actVerMetadatos_;
+    QAction*            actVerLista_;
+    QAction*            actEditarImagen_;
     QAction*            actAyudaAcercade_;
     QTextEdit*          txtEditor_;
     QPushButton*        botonOk_;
@@ -62,6 +69,15 @@ private:
     QListWidget*        lista_recientes_;
     QInputDialog*       inputDialog_;
     QMediaContent       lista_;
+    QSlider*            brightnessSlider_;
+    QSlider*            contrastSlider_;
+    QSlider*            saturavionSlider_;
+    QSystemTrayIcon*    trayIcon;
+    QMenu*              trayIconMenu;
+    QAction*            minimizeAction;
+    QAction*            maximizeAction;
+    QAction*            restoreAction;
+    QAction*            quitAction;
 
 private slots:
     void onOpen();
@@ -77,6 +93,13 @@ private slots:
     void onFullscreen();
     void onMetadatos();
     void onAcercade();
+    void Bucle();
+    void Aleatoria();
+    void onLista();
+    void onSalir();
+    void Ver_controles_edicion();
+    void createActions();
+    void createTrayIcon();
 };
 
 #endif // MAINWINDOW_H
