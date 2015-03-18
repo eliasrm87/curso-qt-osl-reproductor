@@ -1,22 +1,15 @@
 Tercer proyecto - Reproductor Multimedia 
 ----
 
-En esta ocasión veremos algunas de las capacidades multimedia de Qt5. Esta práctica permitirá reforzar los conocimientos adquiridos hasta ahora al tiempo que experimentamos con las características multimedia de Qt5.
-
-Como mínimo, implementaremos las siguientes funcionalidades:
-
-* Ventana con espacio para mostrar vídeo
-* Botones básicos para abrir y controlar la reproducción de contenidos.
-* Barra para navegar a lo largo del contenido.
-* Control de volumen.
+![Mostrar_Ejemplo](/ejemplo.png)
 
 Modus operandi
 ----
 
 1. Hacer un Fork de este proyecto para usarlo como referencia.
-* Leer, probar y entender el código propuesto.
-* Modificar el código para adaptarlo al estilo de cada uno.
-* Estudiar la implementación de Qt para manejar sockets
+* **Leer, probar y entender el código propuesto.**
+* **Modificar el código para adaptarlo al estilo de cada uno.**
+* **Estudiar la implementación de Qt para manejar sockets**
 * Descanso de 15 minutos
 * Realizar las tareas propuestas para la clase
 * Almorzar
@@ -26,12 +19,12 @@ Tareas propuestas para realizar en clase
 
 Se propone realizar las siguientes tareas:
 
-* Añadir menú "Archivo" con opción para "Abrir" un archivo
-* Añadir menú "Ayuda" con opción "Acerca de" (Heredar de QDialog)
-* Añadir menú "Ver" con opción "Pantalla completa"
+* **Añadir menú "Archivo" con opción para "Abrir" un archivo**
+* **Añadir menú "Ayuda" con opción "Acerca de" (Heredar de QDialog)**
+* **Añadir menú "Ver" con opción "Pantalla completa"**
 * Añadir opción "Recientes" al menú "Archivo"
-* Añadir opción "Metadatos" en el menú "Ver"
-* Añadir soporte para reproducir fuentes de streaming
+* **Añadir opción "Metadatos" en el menú "Ver"**
+* **Añadir soporte para reproducir fuentes de streaming**
 
 Entrega
 ----

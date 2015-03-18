@@ -12,9 +12,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    recientes.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    recientes.h
 
 RESOURCES += \
     resources.qrc
