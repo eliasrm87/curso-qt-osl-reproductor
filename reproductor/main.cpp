@@ -1,3 +1,8 @@
+// Aplicación realizada por Adrián Rodríguez Bazaga
+// alu0100826456@ull.edu.es
+// Curso de QT: Reproductor
+
+
 #include "mainwindow.h"
 #include <QApplication>
 

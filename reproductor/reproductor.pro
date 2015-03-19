@@ -7,16 +7,24 @@
 QT       += core network xml multimedia multimediawidgets widgets
 
 
-TARGET = reproductor-exe
+TARGET = reproductor-arb-exe
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    dialogo_url.cpp \
+    dialogo_imagen.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    dialogo_url.h \
+    dialogo_imagen.h
 
 RESOURCES += \
     resources.qrc
+
+FORMS += \
+    urldialog.ui \
+    imagedialog.ui
 
 

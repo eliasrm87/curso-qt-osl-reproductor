@@ -26,12 +26,12 @@ Tareas propuestas para realizar en clase
 
 Se propone realizar las siguientes tareas:
 
-* Añadir menú "Archivo" con opción para "Abrir" un archivo
-* Añadir menú "Ayuda" con opción "Acerca de" (Heredar de QDialog)
-* Añadir menú "Ver" con opción "Pantalla completa"
-* Añadir opción "Recientes" al menú "Archivo"
-* Añadir opción "Metadatos" en el menú "Ver"
-* Añadir soporte para reproducir fuentes de streaming
+* Añadir menú "Archivo" con opción para "Abrir" un archivo				(OK)
+* Añadir menú "Ayuda" con opción "Acerca de" (Heredar de QDialog)		(OK)
+* Añadir menú "Ver" con opción "Pantalla completa"						(OK)
+* Añadir opción "Recientes" al menú "Archivo"							(OK)
+* Añadir opción "Metadatos" en el menú "Ver"							(OK)
+* Añadir soporte para reproducir fuentes de streaming					(OK)
 
 Entrega
 ----
@@ -40,12 +40,12 @@ Todo el trabajo realizado en clase y/o en casa, debe ser subido a [GitHub] y, pa
 
 Para subir nota, proponemos las siguientes tareas para casa:
 
-* Añadir soporte para cargar y mostrar listas de reproducción [M3U] y/o [PLS]
-* Añadir funciones de reproducción en bucle, reproducción aleatoria
-* Implementar lo necesario para que el reproductor se minimize en la bandeja del sistema
-* Añadir menú contextual al icono de bandeja del sistema
-* Agregar menú "editar" con opción "imagen", que haga que aparezca un diálogo en el que se pueda modificar el brillo, constraste y saturación del vídeo
-* Soporte para subtítulos Subrip(Srt)
+* Añadir soporte para cargar y mostrar listas de reproducción [M3U] y/o [PLS]					(OK)
+* Añadir funciones de reproducción en bucle, reproducción aleatoria								(OK)
+* Implementar lo necesario para que el reproductor se minimize en la bandeja del sistema		(OK)
+* Añadir menú contextual al icono de bandeja del sistema	
+* Agregar menú "editar" con opción "imagen", que haga que aparezca un diálogo en el que se pueda modificar el brillo, constraste y saturación del vídeo		(OK)
+* Soporte para subtítulos Subrip(Srt)		(OK)
 
 
 *Nota: Se valorará el simple hecho de haberlo intentado, no tiene que ser todo perfecto, lo importante es que aprendas a "buscarte la vida" con la documentación de QT al tiempo que practicas el desarrollo con este framework.* 

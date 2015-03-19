@@ -4,5 +4,9 @@
         <file>resources/pause.png</file>
         <file>resources/play.png</file>
         <file>resources/stop.png</file>
+        <file>resources/fullscreen.png</file>
+        <file>resources/repeat.png</file>
+        <file>resources/random.png</file>
+        <file>resources/secuential.png</file>
     </qresource>
 </RCC>
