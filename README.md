@@ -40,12 +40,12 @@ Todo el trabajo realizado en clase y/o en casa, debe ser subido a [GitHub] y, pa
 
 Para subir nota, proponemos las siguientes tareas para casa:
 
-* Añadir soporte para cargar y mostrar listas de reproducción [M3U] y/o [PLS]					(OK)
-* Añadir funciones de reproducción en bucle, reproducción aleatoria								(OK)
-* Implementar lo necesario para que el reproductor se minimize en la bandeja del sistema		(OK)
+* Añadir soporte para cargar y mostrar listas de reproducción [M3U] y/o [PLS]	(OK)
+* Añadir funciones de reproducción en bucle, reproducción aleatoria		(OK)
+* Implementar lo necesario para que el reproductor se minimize en la bandeja del sistema	(OK)
 * Añadir menú contextual al icono de bandeja del sistema	
-* Agregar menú "editar" con opción "imagen", que haga que aparezca un diálogo en el que se pueda modificar el brillo, constraste y saturación del vídeo		(OK)
-* Soporte para subtítulos Subrip(Srt)		(OK)
+* Agregar menú "editar" con opción "imagen", que haga que aparezca un diálogo en el que se pueda modificar el brillo, constraste y saturación del vídeo	(OK)
+* Soporte para subtítulos Subrip(Srt)	(OK)
 
 
 *Nota: Se valorará el simple hecho de haberlo intentado, no tiene que ser todo perfecto, lo importante es que aprendas a "buscarte la vida" con la documentación de QT al tiempo que practicas el desarrollo con este framework.* 
