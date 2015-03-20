@@ -4,5 +4,6 @@
         <file>resources/pause.png</file>
         <file>resources/play.png</file>
         <file>resources/stop.png</file>
+        <file>resources/PublicInformationSymbol_EmergencyExit.png</file>
     </qresource>
 </RCC>
