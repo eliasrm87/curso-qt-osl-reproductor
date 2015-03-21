@@ -8,5 +8,8 @@
         <file>resources/open.png</file>
         <file>resources/fullscreen.png</file>
         <file>resources/help.png</file>
+        <file>resources/magnifier.png</file>
+        <file>resources/repeat.png</file>
+        <file>resources/shuffle.png</file>
     </qresource>
 </RCC>
