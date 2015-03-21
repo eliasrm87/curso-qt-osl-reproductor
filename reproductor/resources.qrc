@@ -4,5 +4,12 @@
         <file>resources/pause.png</file>
         <file>resources/play.png</file>
         <file>resources/stop.png</file>
+        <file>resources/exit.png</file>
+        <file>resources/open.png</file>
+        <file>resources/fullscreen.png</file>
+        <file>resources/help.png</file>
+        <file>resources/magnifier.png</file>
+        <file>resources/repeat.png</file>
+        <file>resources/shuffle.png</file>
     </qresource>
 </RCC>

@@ -3,3 +3,4 @@ moc_*
 *.pro.user*
 *.exe
 callgrind.out.*
+build-reproductor-Desktop_Qt_5_4_0_GCC_64bit-Debug/
