@@ -20,3 +20,4 @@ RESOURCES += \
     resources.qrc
 
 
+TRANSLATIONS = reproductor_es.ts
