@@ -3,6 +3,27 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    //Creando los menus.
+    mainMenu_ = new QMenuBar(this);
+    mnuArchivo_ = new QMenu(tr("&Archivo"), this);
+    mainMenu_->addMenu(mnuArchivo_);
+    mnuAyuda_ = new QMenu(tr("&Ayuda"),this);
+    mainMenu_->addMenu(mnuAyuda_);
+
+    actArchivoAbrir_ = new QAction(tr("&Abrir"), this);
+    actArchivoAbrir_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    mnuArchivo_->addAction(actArchivoAbrir_);
+
+    actAcercaDe_ = new QAction(tr("&Acerca de"),this);
+    mnuAyuda_->addAction(actAcercaDe_);
+
+    mnuVer = new QMenu(tr("&Ver"),this);
+    mainMenu_->addMenu(mnuVer);
+    actPantallaCompleta_ = new QAction(tr("&Pantalla completa"),this);
+    mnuVer->addAction(actPantallaCompleta_);
+
+    crearVentanaAcercaDe();
+
     //Create central widget and set main layout
     wgtMain_ = new QWidget(this);
     lytMain_ = new QGridLayout(wgtMain_);
@@ -12,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Initialize widgets
     mediaPlayer_  = new QMediaPlayer(this);
     playerSlider_ = new QSlider(Qt::Horizontal, this);
-    videoWidget_  = new QVideoWidget(this);
+    videoWidget_  = new myQvideoWidget();
     volumeSlider_ = new QSlider(Qt::Horizontal, this);
     btnOpen_      = new QToolButton(this);
     btnPlay_      = new QToolButton(this);
@@ -42,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent) :
     btnPlay_->setIcon(QIcon(QPixmap(":/icons/resources/play.png")));
     btnStop_->setIcon(QIcon(QPixmap(":/icons/resources/stop.png")));
 
+    //Agregamos la barra de menú a la ventana
+    this->setMenuBar(mainMenu_);
+
     //Connections
     connect(btnOpen_,      SIGNAL(pressed()),               this,         SLOT(onOpen()));
     connect(btnPlay_,      SIGNAL(pressed()),               mediaPlayer_, SLOT(play()));
@@ -51,11 +75,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mediaPlayer_,  SIGNAL(durationChanged(qint64)), this,         SLOT(onDurationChanged(qint64)));
     connect(mediaPlayer_,  SIGNAL(positionChanged(qint64)), this,         SLOT(onPositionChanged(qint64)));
     connect(volumeSlider_, SIGNAL(sliderMoved(int)),        this,         SLOT(onVolumeChanged(int)));
+
+    connect(actArchivoAbrir_,   SIGNAL(triggered()), this,          SLOT(onOpen()));
+    connect(actAcercaDe_,       SIGNAL(triggered()), this,          SLOT(alAcercaDe()));
+    connect(actPantallaCompleta_,       SIGNAL(triggered()), this,          SLOT(pantallaCompleta()));
+
 }
 
 MainWindow::~MainWindow()
 {
-
+    mainMenu_->deleteLater();
+    actArchivoAbrir_->deleteLater();
+    mnuArchivo_->deleteLater();
+    mnuAyuda_->deleteLater();
+    qdAcercaDe_->deleteLater();
 }
 
 void MainWindow::onOpen()
@@ -87,3 +120,28 @@ void MainWindow::onVolumeChanged(int volume)
 {
     mediaPlayer_->setVolume(volume);
 }
+
+void MainWindow::alAcercaDe()
+{
+    qdAcercaDe_->exec();
+    //qdAcercaDe_->setGeometry(30, 30, 100, 100);
+
+}
+
+void MainWindow::crearVentanaAcercaDe()
+{
+    qdAcercaDe_= new QDialog(this);
+    qdAcercaDe_->setWindowTitle("Acerca de...");
+    layAcercaDe_= new QGridLayout(qdAcercaDe_);
+    qdAcercaDe_->setLayout(layAcercaDe_);
+
+    labAcercaDe_ = new QLabel("Reproductor de video hecho en QT.");
+    layAcercaDe_->addWidget(labAcercaDe_,0,0,1,1);
+
+}
+
+void MainWindow::pantallaCompleta()
+{
+    videoWidget_->setFullScreen(true);
+}
+

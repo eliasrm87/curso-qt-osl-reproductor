@@ -12,9 +12,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    myqvideowidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    myqvideowidget.h
 
 RESOURCES += \
     resources.qrc
