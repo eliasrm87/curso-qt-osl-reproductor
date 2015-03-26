@@ -34,66 +34,31 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::onOpen()
 {
   msgOpen_->exec();
-  QAction *action(NULL);
   if ((QPushButton*) msgOpen_->clickedButton() == btnSourceLocal_) {
-    // Local file source
-    QString *selectedFilter = new QString;
-    QString path = QFileDialog::getOpenFileName(this,
-                                                tr("Abrir archivo"),
-                                                "..",
-                                                tr("Música (*.ogg *.mp3);;\
-                                                    Vídeo (*.avi *.mp4);;\
-                                                    Todos(*)"),
-                                                selectedFilter);
-    if (path.isEmpty()) {
-      return;
-    }
-    mediaPlayer_->setMedia(QUrl::fromLocalFile(path));
-    // Split path and fileName
-    QString fileName;
-    if (path.contains('/', Qt::CaseInsensitive)) {
-      int index = path.size()- 1 - path.lastIndexOf('/');
-      fileName = path.right(index);
-    }
-    // Add to recent files, if it doesn't exist
-    if ((fileName.endsWith(".ogg") ||
-         fileName.endsWith(".mp3")) &&
-        !lstActsRecentMusic_->contains(fileName)) {
-      // Add to recent music files
-      action = new QAction(fileName, mnuRecentMusic_);
-      action->setObjectName("QAction");
-      action->setData(QVariant(path));
-      connect(action, SIGNAL(triggered()), this, SLOT(onRecent()));
-      lstActsRecentMusic_->insert(fileName, action);
-      mnuRecentMusic_->addAction(action);
-      mnuRecentMusic_->setEnabled(true);
-      return;
-    }
-    if ((fileName.endsWith(".avi") ||
-         fileName.endsWith(".mp4")) &&
-        !lstActsRecentVideo_->contains(fileName)) {
-      // Add to recent video files
-      action = new QAction(fileName, mnuRecentVideo_);
-      action->setObjectName("QAction");
-      action->setData(QVariant(path));
-      connect(action, SIGNAL(triggered()), this, SLOT(onRecent()));
-      lstActsRecentVideo_->insert(fileName, action);
-      mnuRecentVideo_->addAction(action);
-      mnuRecentVideo_->setEnabled(true);
-      return;
+    //Show file open dialog
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Abrir archivo"),
+                                                    "..",
+                                                    tr("Music (*.ogg *.mp3);;\
+                                                        Video (*.avi *.mp4);;\
+                                                        All (*)"));
+    if (fileName != "") {
+      mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
+      //updateMetaData();
     }
   }
   else {
-    // Streaming source
-
-    mediaPlayer_->setMedia(QUrl("http://208.92.53.87:80/MAXIMAFM"));
+    dlgAbout_->exec();
   }
 }
 
 void MainWindow::onRecent()
 {
-  QAction *sender = (QAction *) QObject::sender();
-  mediaPlayer_->setMedia(QUrl::fromLocalFile(sender->data().toString()));
+  QObject *sender = QObject::sender();
+  if (sender) {
+    QString absolutePath(sender->data);
+  }
+  mediaPlayer_->setMedia(QUrl::fromLocalFile(fileName));
 }
 
 void MainWindow::onAbout()
@@ -337,18 +302,16 @@ void MainWindow::userConfig()
   bool exist = fileUser_->exists();
   if (!fileUser_->open(QIODevice::ReadWrite)) {
     qWarning("Couldn't open file.");
-    return;
-  }
-  mnuRecentMusic_->setEnabled(false);
-  mnuRecentVideo_->setEnabled(false);
-  mnuRecentStreaming_->setEnabled(false);
-  if (!exist) {
-    createJSON();
   }
   else {
-    readJSON();
+    if (!exist) {
+      createJSON();
+    }
+    else {
+      readJSON();
+    }
+    fileUser_->close();
   }
-  fileUser_->close();
 }
 
 void MainWindow::createMetaData()
@@ -371,9 +334,17 @@ void MainWindow::destroyMetaData()
 
 void MainWindow::createJSON()
 {
-  lstActsRecentMusic_ = new QMap<QString, QAction*>;
-  lstActsRecentVideo_ = new QMap<QString, QAction*>;
-  lstActsRecentStreaming_ = new QMap<QString, QAction*>;
+  QJsonObject *base = new QJsonObject;
+  QJsonObject *empty = new QJsonObject;
+  base->insert("music", *empty);
+  base->insert("video", *empty);
+  base->insert("streaming", *empty);
+  empty->insert("recent", *base);
+  delete base;
+  QJsonDocument *jsonDocument = new QJsonDocument(*empty);
+  delete empty;
+  fileUser_->write(jsonDocument->toJson());
+  delete jsonDocument;
 }
 
 bool MainWindow::readJSON()
@@ -394,32 +365,23 @@ bool MainWindow::readJSON()
   QJsonObject jsonRecentVideo     = jsonRootObject["video"].toObject();
   QJsonObject jsonRecentStreaming = jsonRootObject["streaming"].toObject();
   // Music
-  lstActsRecentMusic_ = new QMap<QString, QAction*>;
+  lstActsRecentMusic_ = new QList<QAction*>;
   foreach (QString key, jsonRecentMusic.keys()) {
-    mnuRecentMusic_->setEnabled(true);
-    QAction *action = mnuRecentMusic_->addAction(key, this, SLOT(onRecent()));
-    action->setObjectName("QAction");
-    action->setData(QVariant(jsonRecentMusic.take(key)));
-    lstActsRecentMusic_->insert(key, action);
+    QAction *action = new QAction(key, mnuRecentMusic_);
+    QString absolutePath;
+    QJsonValue jsonValue = jsonRecentMusic.take(key);
+    switch (jsonValue.type()) {
+      case QJsonValue::String:
+        absolutePath = jsonValue.toString();
+        break;
+      default:
+        break;
+    }
+    action->setData(QVariant(absolutePath));
+    connect(action, SIGNAL(triggered()), this, SLOT(onRecent()));
+    lstActsRecentMusic_->append(action);
   }
-  // Video
-  lstActsRecentVideo_ = new QMap<QString, QAction*>;
-  foreach (QString key, jsonRecentVideo.keys()) {
-    mnuRecentVideo_->setEnabled(true);
-    QAction *action = mnuRecentVideo_->addAction(key, this, SLOT(onRecent()));
-    action->setObjectName("QAction");
-    action->setData(QVariant(jsonRecentVideo.take(key)));
-    lstActsRecentVideo_->insert(key, action);
-  }
-  // Streaming
-  lstActsRecentStreaming_ = new QMap<QString, QAction*>;
-  foreach (QString key, jsonRecentStreaming.keys()) {
-    mnuRecentStreaming_->setEnabled(true);
-    QAction *action = mnuRecentStreaming_->addAction(key, this, SLOT(onRecent()));
-    action->setObjectName("QAction");
-    action->setData(QVariant(jsonRecentStreaming.take(key)));
-    lstActsRecentStreaming_->insert(key, action);
-  }
+
   return true;
 }
 
@@ -433,44 +395,23 @@ bool MainWindow::writeJSON()
     qWarning("Couldn't open file.");
     return false;
   }
-  QAction *action(NULL);
-  // Make music JsonObject
-  QJsonObject *jsonRecentMusic = new QJsonObject;
-  foreach (QString key, lstActsRecentMusic_->keys()) {
-    action = (*lstActsRecentMusic_)[key];
-    lstActsRecentMusic_->remove(key);
-    jsonRecentMusic->insert(key, QJsonValue(action->data().toString()));
-    delete action;
-  }
-  // Make video JsonObject
-  QJsonObject *jsonRecentVideo = new QJsonObject;
-  foreach (QString key, lstActsRecentVideo_->keys()) {
-    action = (*lstActsRecentVideo_)[key];
-    lstActsRecentVideo_->remove(key);
-    jsonRecentVideo->insert(key, QJsonValue(action->data().toString()));
-    delete action;
-  }
-  // Make streaming  JsonObject
-  QJsonObject *jsonRecentStreaming= new QJsonObject;
-  foreach (QString key, lstActsRecentStreaming_->keys()) {
-    action = (*lstActsRecentStreaming_)[key];
-    lstActsRecentStreaming_->remove(key);
-    jsonRecentStreaming->insert(key, QJsonValue(action->data().toString()));
-    delete action;
-  }
-  action = NULL;
-  // Write JsonObjects
-  QJsonObject *empty = new QJsonObject;
-  empty->insert("music", *jsonRecentMusic);
-  empty->insert("video", *jsonRecentVideo);
-  empty->insert("streaming", *jsonRecentStreaming);
   QJsonObject *base = new QJsonObject;
-  base->insert("recent", *empty);
-  delete empty;
-  QJsonDocument *jsonDocument = new QJsonDocument(*base);
+  QJsonObject *empty = new QJsonObject;
+  base->insert("music", *empty);
+  base->insert("video", *empty);
+  base->insert("streaming", *empty);
+  empty->insert("recent", *base);
   delete base;
+  QJsonDocument *jsonDocument = new QJsonDocument(*empty);
+  delete empty;
   fileUser_->write(jsonDocument->toJson());
   delete jsonDocument;
+
   fileUser_->close();
   return true;
 }
+/**
+ * Cuando varios objetos lanzan un mismo slot, puede ser interesante conocer quién lanzó la señal.
+ * Para ello, usamos un método estático de QObjet (sender), dentro del slot.
+ * Además, puede hacer un paso de mensajes usando otro método estático de QObject (data)
+ */
